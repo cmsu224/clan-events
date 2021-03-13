@@ -10,7 +10,7 @@ repositories {
 	mavenCentral()
 }
 
-def runeLiteVersion = '1.7.1'
+def runeLiteVersion = '1.7.2.2'
 
 dependencies {
 	compile 'com.google.apis:google-api-services-sheets:v4-rev581-1.25.0'
