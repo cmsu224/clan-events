@@ -13,6 +13,7 @@ repositories {
 def runeLiteVersion = '1.7.1'
 
 dependencies {
+	compile 'com.google.apis:google-api-services-sheets:v4-rev581-1.25.0'
 	compileOnly group: 'net.runelite', name:'client', version: runeLiteVersion
 
 	compileOnly 'org.projectlombok:lombok:1.18.4'

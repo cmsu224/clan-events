@@ -19,7 +19,6 @@ public class ElysiumEventsOverlay extends OverlayPanel
 {
     private final Client client;
     private final ElysiumEventsPlugin plugin;
-
     @Inject
     private ElysiumEventsConfig config;
 
