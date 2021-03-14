@@ -10,9 +10,11 @@ The plugin will retrieve data from the google spreadsheet provided and print out
 Home:
 ![image](https://user-images.githubusercontent.com/14130954/111088303-e8f61b00-84fc-11eb-8d36-86e507e454e4.png)
 ![image](https://user-images.githubusercontent.com/14130954/111088168-4342ac00-84fc-11eb-824d-55417141d9ee.png)
+
 Skill of the Week:
 ![image](https://user-images.githubusercontent.com/14130954/111088314-fe6b4500-84fc-11eb-8cfc-deee73274396.png)
 ![image](https://user-images.githubusercontent.com/14130954/111088186-56557c00-84fc-11eb-957f-f4195722d838.png)
+
 Boss of the Week:
 ![image](https://user-images.githubusercontent.com/14130954/111088333-104ce800-84fd-11eb-9623-5b7479df3fec.png)
 ![image](https://user-images.githubusercontent.com/14130954/111088200-666d5b80-84fc-11eb-929e-7797c237f853.png)
