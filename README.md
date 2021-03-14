@@ -27,6 +27,7 @@ The Participant list of BoTW and SoTW on the spreadsheet is directly grabbed fro
 
 The Google Sheet ID and API must be placed in the config in order for the plugin panel to work.
 You can simply grab the Google Sheet ID from the url of the spreadsheet:
+
 ![image](https://user-images.githubusercontent.com/14130954/111088373-4722fe00-84fd-11eb-9407-ff972e29c5c0.png)
 
 You can create your own API Key from here: https://console.developers.google.com/apis/credentials.
