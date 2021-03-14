@@ -37,7 +37,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -82,7 +81,7 @@ class ElysiumEventsPanel extends PluginPanel
             if (e.getStateChange() == ItemEvent.SELECTED)
             {
                 final ComboBoxIconEntry source = (ComboBoxIconEntry) e.getItem();
-                ssText.setText(getSheetDataFormated(sheet, source.getData().toString()));
+                ssText.setText(getSheetDataFormatted(sheet, source.getData().toString()));
             }
         });
 
@@ -101,7 +100,7 @@ class ElysiumEventsPanel extends PluginPanel
         ComboBoxIconEntry selected = (ComboBoxIconEntry) dropdown.getSelectedItem();
 
         ssArea.removeAll();
-        ssText.setText(getSheetDataFormated(sheet, selected.getData().toString()));
+        ssText.setText(getSheetDataFormatted(sheet, selected.getData().toString()));
         ssArea.add(ssText);
         this.add(ssArea, BorderLayout.NORTH);
         this.add(createRefreshButton(config), BorderLayout.NORTH);
@@ -132,7 +131,7 @@ class ElysiumEventsPanel extends PluginPanel
                 if (e.getButton() == MouseEvent.BUTTON1)
                 {
                     ComboBoxIconEntry selected = (ComboBoxIconEntry) dropdown.getSelectedItem();
-                    ssText.setText(getSheetDataFormated(sheet, selected.getData().toString()));
+                    ssText.setText(getSheetDataFormatted(sheet, selected.getData().toString()));
                 }
             }
         });
@@ -140,7 +139,7 @@ class ElysiumEventsPanel extends PluginPanel
         return label;
     }
 
-    private String getSheetDataFormated(GoogleSheet sheet, String field)
+    private String getSheetDataFormatted(GoogleSheet sheet, String field)
     {
         try
         {

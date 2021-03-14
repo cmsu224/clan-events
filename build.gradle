@@ -13,7 +13,9 @@ repositories {
 def runeLiteVersion = '1.7.2.2'
 
 dependencies {
-	implementation 'com.google.apis:google-api-services-sheets:v4-rev581-1.25.0'
+	implementation('com.google.apis:google-api-services-sheets:v4-rev581-1.25.0') {
+		exclude group: 'com.google.guava:guava:20.0', module: 'com.google.guava:guava:20.0'
+	}
 	compileOnly group: 'net.runelite', name:'client', version: runeLiteVersion
 
 	compileOnly 'org.projectlombok:lombok:1.18.4'
