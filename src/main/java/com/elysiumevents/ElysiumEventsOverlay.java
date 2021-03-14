@@ -45,7 +45,7 @@ public class ElysiumEventsOverlay extends OverlayPanel
         {
             panelComponent.getChildren().add(TitleComponent.builder()
                     .text(text)
-                    .color(Color.green)
+                    .color(config.passColor())
                     .build());
 
             panelComponent.setPreferredSize(new Dimension(

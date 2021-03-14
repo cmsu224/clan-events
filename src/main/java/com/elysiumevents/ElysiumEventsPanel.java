@@ -51,6 +51,8 @@ class ElysiumEventsPanel extends PluginPanel
     private final JLabel ssText = new JLabel();
     private final GoogleSheet sheet = new GoogleSheet();
     final JComboBox<ComboBoxIconEntry> dropdown = new JComboBox<>();
+    private String color1;
+    private String color2;
 
     void init(ElysiumEventsConfig config, int index){
         // Google sheet API
@@ -64,17 +66,20 @@ class ElysiumEventsPanel extends PluginPanel
         final ComboBoxIconListRenderer renderer = new ComboBoxIconListRenderer();
         dropdown.setRenderer(renderer);
 
-        BufferedImage icon = ImageUtil.loadImageResource(getClass(), "exitportal.png");
-        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), "Home", "home"));
-        icon = ImageUtil.loadImageResource(getClass(), "overall.png");
-        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), "Skill of the Week", "sotw"));
-        icon = ImageUtil.loadImageResource(getClass(), "vorkath.png");
-        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), "Boss of the Week", "botw"));
-        icon = ImageUtil.loadImageResource(getClass(), "league.png");
-        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), "Clan Event", "event"));
-        icon = ImageUtil.loadImageResource(getClass(), "normal.png");
-        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), "Hall of Fame", "hof"));
+        BufferedImage icon = ImageUtil.loadImageResource(getClass(), "home.png");
+        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Home", "home"));
+        icon = ImageUtil.loadImageResource(getClass(), "sotw.png");
+        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Skill of the Week", "sotw"));
+        icon = ImageUtil.loadImageResource(getClass(), "botw.png");
+        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Boss of the Week", "botw"));
+        icon = ImageUtil.loadImageResource(getClass(), "event.png");
+        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Clan Event", "event"));
+        icon = ImageUtil.loadImageResource(getClass(), "hof.png");
+        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Hall of Fame", "hof"));
 
+        //Set the color
+        color1 = "#"+Integer.toHexString(config.col1color().getRGB()).substring(2);
+        color2 = "#"+Integer.toHexString(config.col2color().getRGB()).substring(2);
 
         dropdown.addItemListener(e ->
         {
@@ -149,7 +154,7 @@ class ElysiumEventsPanel extends PluginPanel
             if (values == null || values.isEmpty()) {
                 System.out.println("No data found.");
             } else {
-                data += "<html><table>";
+                data += "<html><table width=230>";
                 for (List row : values) {
                     String val1 = "";
                     String val2 = "";
@@ -170,10 +175,10 @@ class ElysiumEventsPanel extends PluginPanel
                     }
 
                     data += "<tr>";
-                    data += "<td>";
+                    data += "<td><font color='" + color1 + "'>";
                     data += val1;
-                    data += "</td>";
-                    data += "<td><font color='green'>";
+                    data += "</font></td>";
+                    data += "<td><font color='" + color2 + "'>";
                     data += val2;
                     data += "</font></td>";
                     data += "</tr>";

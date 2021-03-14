@@ -5,6 +5,8 @@ import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
 
+import java.awt.*;
+
 @ConfigGroup(ElysiumEventsPlugin.CONFIG_GROUP)
 public interface ElysiumEventsConfig extends Config
 {
@@ -59,9 +61,21 @@ public interface ElysiumEventsConfig extends Config
 
 	@ConfigItem(
 			position = 4,
+			keyName = "passColor",
+			name = "Overlay Color",
+			description = "Configures the color of the passphrase",
+			section = eventPassSection
+	)
+	default Color passColor()
+	{
+		return Color.GREEN;
+	}
+
+	@ConfigItem(
+			position = 5,
 			keyName = "sheetId",
-			name = "Google Sheet ID",
-			description = "Id of the google sheet to read.",
+			name = "Google Sheet ID (Restart plugin)",
+			description = "ID of the google sheet to read.  You may need to restart the plugin after you have changed this.",
 			section = gSheetsSection
 	)
 	default String sheetId()
@@ -70,14 +84,38 @@ public interface ElysiumEventsConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 5,
+			position = 6,
 			keyName = "apiKey",
 			name = "Google Sheet API Key",
-			description = "Your auth to read the google sheet",
+			description = "Google project API Key (ask your clan for one).  You may need to restart the plugin after you have changed this.",
 			section = gSheetsSection
 	)
 	default String apiKey()
 	{
 		return "";
+	}
+
+	@ConfigItem(
+			position = 7,
+			keyName = "col1color",
+			name = "Column 1 Color",
+			description = "Configures the color of the spreadsheet column displayed",
+			section = gSheetsSection
+	)
+	default Color col1color()
+	{
+		return Color.cyan;
+	}
+
+	@ConfigItem(
+			position = 8,
+			keyName = "col2color",
+			name = "Column 2 Color",
+			description = "Configures the color of the spreadsheet column displayed",
+			section = gSheetsSection
+	)
+	default Color col2color()
+	{
+		return Color.GREEN;
 	}
 }
