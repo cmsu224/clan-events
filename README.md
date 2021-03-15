@@ -1,4 +1,4 @@
-# Elysium CC Events
+# Clan Events
 A plugin helpful for clan events.  It creates an overlay that displays the event password and time (UTC) to your screen.
 This plugin can utilize Google Sheets API to retrieve data from Google Spreadsheets.  
 
