@@ -1,19 +1,15 @@
-package com.elysiumevents;
+package com.clanevents;
 
 import com.google.inject.Provides;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
-import net.runelite.api.GameState;
-import net.runelite.api.events.GameStateChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.SkillIconManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.worldhopper.WorldHopperConfig;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -24,30 +20,30 @@ import java.io.IOException;
 
 @Slf4j
 @PluginDescriptor(
-		name = "Elysium Events",
-		description = "For Elysium CC Events",
-		tags = {"ely", "elysium", "cc", "hunt", "pass", "event"}
+		name = "Clan Events",
+		description = "A plugin used to keep track of clan events/announcements",
+		tags = {"ely", "elysium", "cc", "hunt", "pass", "event", "clan"}
 )
-public class ElysiumEventsPlugin extends Plugin
+public class ClanEventsPlugin extends Plugin
 {
 	@Inject
 	private Client client;
 
 	@Inject
-	private ElysiumEventsConfig config;
+	private ClanEventsConfig config;
 
 	@Inject
 	private OverlayManager overlayManager;
 
 	@Inject
-	private ElysiumEventsOverlay overlay;
+	private ClanEventsOverlay overlay;
 
 	@Inject
 	private SkillIconManager skillIconManager;
 
 	@Inject
 	private ClientToolbar clientToolbar;
-	private ElysiumEventsPanel panel;
+	private ClanEventsPanel panel;
 	private NavigationButton uiNavigationButton;
 
 	static final String CONFIG_GROUP = "clanevents";
@@ -81,7 +77,7 @@ public class ElysiumEventsPlugin extends Plugin
 		if (!config.sheetId().equals("") && !config.apiKey().equals(""))
 		{
 			final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "icon.png");
-			panel = injector.getInstance(ElysiumEventsPanel.class);
+			panel = injector.getInstance(ClanEventsPanel.class);
 			panel.init(config, 0);
 			uiNavigationButton = NavigationButton.builder()
 					.tooltip("Clan Hub")
@@ -94,8 +90,8 @@ public class ElysiumEventsPlugin extends Plugin
 	}
 
 	@Provides
-	ElysiumEventsConfig provideConfig(ConfigManager configManager)
+	ClanEventsConfig provideConfig(ConfigManager configManager)
 	{
-		return configManager.getConfig(ElysiumEventsConfig.class);
+		return configManager.getConfig(ClanEventsConfig.class);
 	}
 }

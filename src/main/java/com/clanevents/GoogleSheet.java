@@ -1,4 +1,4 @@
-package com.elysiumevents;
+package com.clanevents;
 
 
 import com.google.api.client.http.HttpRequestInitializer;

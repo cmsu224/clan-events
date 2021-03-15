@@ -1,4 +1,4 @@
-package com.elysiumevents;
+package com.clanevents;
 
 import net.runelite.api.Client;
 import net.runelite.client.ui.overlay.OverlayMenuEntry;
@@ -15,15 +15,15 @@ import java.util.TimeZone;
 import static net.runelite.api.MenuAction.RUNELITE_OVERLAY_CONFIG;
 import static net.runelite.client.ui.overlay.OverlayManager.OPTION_CONFIGURE;
 
-public class ElysiumEventsOverlay extends OverlayPanel
+public class ClanEventsOverlay extends OverlayPanel
 {
     private final Client client;
-    private final ElysiumEventsPlugin plugin;
+    private final ClanEventsPlugin plugin;
     @Inject
-    private ElysiumEventsConfig config;
+    private ClanEventsConfig config;
 
     @Inject
-    private ElysiumEventsOverlay(Client client, ElysiumEventsPlugin plugin)
+    private ClanEventsOverlay(Client client, ClanEventsPlugin plugin)
     {
         super(plugin);
         setPosition(OverlayPosition.TOP_CENTER);

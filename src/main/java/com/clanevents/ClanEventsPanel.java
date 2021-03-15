@@ -24,15 +24,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.elysiumevents;
+package com.clanevents;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
 import javax.swing.*;
 
-import com.elysiumevents.components.combobox.ComboBoxIconEntry;
-import com.elysiumevents.components.combobox.ComboBoxIconListRenderer;
+import com.clanevents.components.combobox.ComboBoxIconEntry;
+import com.clanevents.components.combobox.ComboBoxIconListRenderer;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import java.awt.Color;
@@ -45,7 +45,7 @@ import net.runelite.client.ui.PluginPanel;
 import net.runelite.client.util.ImageUtil;
 
 @Slf4j
-class ElysiumEventsPanel extends PluginPanel
+class ClanEventsPanel extends PluginPanel
 {
     private final JPanel ssArea = new JPanel();
     private final JLabel ssText = new JLabel();
@@ -54,7 +54,7 @@ class ElysiumEventsPanel extends PluginPanel
     private String color1;
     private String color2;
 
-    void init(ElysiumEventsConfig config, int index){
+    void init(ClanEventsConfig config, int index){
         // Google sheet API
         String data = "";
         sheet.setKey(config.apiKey());
@@ -111,7 +111,7 @@ class ElysiumEventsPanel extends PluginPanel
         this.add(createRefreshButton(config), BorderLayout.NORTH);
     }
 
-    private JButton createRefreshButton(ElysiumEventsConfig config)
+    private JButton createRefreshButton(ClanEventsConfig config)
     {
         final JButton label = new JButton("Refresh");
         label.setFocusable(false);

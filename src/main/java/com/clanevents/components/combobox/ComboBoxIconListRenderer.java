@@ -1,4 +1,4 @@
-package com.elysiumevents.components.combobox;
+package com.clanevents.components.combobox;
 
 import java.awt.Color;
 import java.awt.Component;

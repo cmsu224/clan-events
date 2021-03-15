@@ -1,4 +1,4 @@
-package com.elysiumevents.components.combobox;
+package com.clanevents.components.combobox;
 
 import javax.annotation.Nullable;
 import javax.swing.Icon;

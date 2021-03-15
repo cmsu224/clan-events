@@ -1,4 +1,4 @@
-package com.elysiumevents;
+package com.clanevents;
 
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
@@ -7,8 +7,8 @@ import net.runelite.client.config.ConfigSection;
 
 import java.awt.*;
 
-@ConfigGroup(ElysiumEventsPlugin.CONFIG_GROUP)
-public interface ElysiumEventsConfig extends Config
+@ConfigGroup(ClanEventsPlugin.CONFIG_GROUP)
+public interface ClanEventsConfig extends Config
 {
 	@ConfigSection(
 			name = "Event Password",
@@ -80,7 +80,7 @@ public interface ElysiumEventsConfig extends Config
 	)
 	default String sheetId()
 	{
-		return "";
+		return "1YMcXxSL3s1NEzsPVMMkPn7EdGNFKENiwqNyDKkJTO80";
 	}
 
 	@ConfigItem(
@@ -92,7 +92,7 @@ public interface ElysiumEventsConfig extends Config
 	)
 	default String apiKey()
 	{
-		return "";
+		return "AIzaSyBaTccn-XkoEWv76GOg7xKlNQPwnvZlSr0";
 	}
 
 	@ConfigItem(
@@ -104,7 +104,7 @@ public interface ElysiumEventsConfig extends Config
 	)
 	default Color col1color()
 	{
-		return Color.cyan;
+		return Color.white;
 	}
 
 	@ConfigItem(
