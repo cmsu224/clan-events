@@ -92,7 +92,7 @@ public interface ClanEventsConfig extends Config
 	)
 	default String apiKey()
 	{
-		return "AIzaSyBaTccn-XkoEWv76GOg7xKlNQPwnvZlSr0";
+		return "";
 	}
 
 	@ConfigItem(
