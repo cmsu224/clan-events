@@ -1,3 +1,8 @@
+# Installation
+To install this plugin, go to the plugin hub and search for "Clan Events" or "Elysium" and click install on the first plugin.  The overlay will work as long as you modify the password.  To get the clan hub panel to show, you must include the Google Sheet ID and Google Sheet API key provided by your clan:
+
+![](https://i.gyazo.com/afcdfeb5a09ea9f84d635a359eab25fb.gif)
+
 # Clan Events
 A plugin helpful for clan events.  It creates an overlay that displays the event password and time (UTC) to your screen.
 This plugin can utilize Google Sheets API to retrieve data from Google Spreadsheets.  
