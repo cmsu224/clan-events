@@ -46,4 +46,4 @@ Once you enable the API, you can create your own API Key from here: https://cons
 
 **Note:** There is a limit of 300 requests per minute for your API Key (or 60 requests per minute for an individual).  If you ever run into a limit, its best to have multiple API Keys for your usage.
 
-If you are using this plugin for your clan, you can simply share your spreadsheet ID and API Key with the rest of your clan members.
+If you are using this plugin for your clan, you can simply share your spreadsheet ID and API Key with the rest of your clan members (I suggest you don't create it with your personal email).
