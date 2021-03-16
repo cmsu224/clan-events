@@ -24,7 +24,7 @@ The spreadsheat must be set to public and the sheet tab names must be one or mor
 
 **Example spreadsheet (Work in progress):** 
 
-https://docs.google.com/spreadsheets/d/1tB8g7EdOnZ5zC2mX1kJJlq0-ZBxPKf9Abz_51UY3JDU/edit#gid=597865158
+https://docs.google.com/spreadsheets/d/1YMcXxSL3s1NEzsPVMMkPn7EdGNFKENiwqNyDKkJTO80/
 
 The Participant list of BoTW and SoTW on the spreadsheet is directly grabbed from https://templeosrs.com.
 
