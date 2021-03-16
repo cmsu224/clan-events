@@ -38,8 +38,12 @@ You can simply grab the Google Sheet ID from the url of the spreadsheet:
 
 ![image](https://user-images.githubusercontent.com/14130954/111088373-4722fe00-84fd-11eb-9407-ff972e29c5c0.png)
 
-You can create your own API Key from here: https://console.developers.google.com/apis/credentials.
+**Google API Key**
 
-**Note:** In order for you API Key to work you must enable the Google Sheet API from the developers console found here: https://console.developers.google.com/apis/library/sheets.googleapis.com
+Before you create your API Key, you must first login to your Google account and enable the Google Sheet API from the developers console found here: https://console.developers.google.com/apis/library/sheets.googleapis.com
+
+Once you enable the API, you can create your own API Key from here: https://console.developers.google.com/apis/credentials.
+
+**Note:** There is a limit of 300 requests per minute for your API Key (or 60 requests per minute for an individual).  If you ever run into a limit, its best to have multiple API Keys for your usage.
 
 If you are using this plugin for your clan, you can simply share your spreadsheet ID and API Key with the rest of your clan members.
