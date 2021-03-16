@@ -41,7 +41,7 @@ public class ClanEventsOverlay extends OverlayPanel
             text = text + " " + localToGMT();
         }
 
-        if (!text.equals(" ") && !text.equals("  "))
+        if (!text.equals(" ") && !text.equals("  ") && config.overlay())
         {
             panelComponent.getChildren().add(TitleComponent.builder()
                     .text(text)

@@ -26,6 +26,18 @@ public interface ClanEventsConfig extends Config
 
 	@ConfigItem(
 			position = 1,
+			keyName = "overlay",
+			name = "Display the overlay",
+			description = "Display the overlay on your game screen",
+			section = eventPassSection
+	)
+	default boolean overlay()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			position = 2,
 			keyName = "eventPass",
 			name = "Event Password",
 			description = "Creates an overlay with the event password time",
@@ -33,12 +45,12 @@ public interface ClanEventsConfig extends Config
 	)
 	default String eventPass()
 	{
-		return "Event Password";
+		return "";
 	}
 	@ConfigItem(
-			position = 2,
+			position = 3,
 			keyName = "dtm",
-			name = "Date & Time",
+			name = "Include Date & Time",
 			description = "Display the date and time",
 			section = eventPassSection
 	)
@@ -48,7 +60,7 @@ public interface ClanEventsConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 3,
+			position = 4,
 			keyName = "subPass",
 			name = "Bounty/Challenge Password",
 			description = "Display the sub passsword.",
@@ -60,7 +72,7 @@ public interface ClanEventsConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 4,
+			position = 5,
 			keyName = "passColor",
 			name = "Overlay Color",
 			description = "Configures the color of the passphrase",
@@ -72,7 +84,7 @@ public interface ClanEventsConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 5,
+			position = 6,
 			keyName = "sheetId",
 			name = "Google Sheet ID (Restart plugin)",
 			description = "ID of the google sheet to read.  You may need to restart the plugin after you have changed this.",
@@ -84,7 +96,7 @@ public interface ClanEventsConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 6,
+			position = 7,
 			keyName = "apiKey",
 			name = "Google Sheet API Key",
 			description = "Google project API Key (ask your clan for one).  You may need to restart the plugin after you have changed this.",
@@ -96,7 +108,7 @@ public interface ClanEventsConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 7,
+			position = 8,
 			keyName = "col1color",
 			name = "Column 1 Color",
 			description = "Configures the color of the spreadsheet column displayed",
@@ -108,7 +120,7 @@ public interface ClanEventsConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 8,
+			position = 9,
 			keyName = "col2color",
 			name = "Column 2 Color",
 			description = "Configures the color of the spreadsheet column displayed",
