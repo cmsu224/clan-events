@@ -72,15 +72,36 @@ public interface ClanEventsConfig extends Config
 	}
 
 	@ConfigItem(
+			position = 4,
+			keyName = "disclaimer",
+			name = "Colors MUST be different:",
+			description = "The Password color and the Date/Time color must be different",
+			section = eventPassSection
+	)
+	default void disclaimer() {}
+
+	@ConfigItem(
 			position = 5,
 			keyName = "passColor",
-			name = "Overlay Color",
+			name = "Password Color",
 			description = "Configures the color of the passphrase",
 			section = eventPassSection
 	)
 	default Color passColor()
 	{
 		return Color.GREEN;
+	}
+
+	@ConfigItem(
+			position = 10,
+			keyName = "timeColor",
+			name = "Time Color",
+			description = "Configures the color of the date and time",
+			section = eventPassSection
+	)
+	default Color timeColor()
+	{
+		return Color.WHITE;
 	}
 
 	@ConfigItem(
