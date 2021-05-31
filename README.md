@@ -27,7 +27,7 @@ The plugin will retrieve data from the spreadsheet provided and print out the fi
 # Create your own Google spreadsheet and API Key
 The spreadsheat must be set to public and the sheet tab names must be one or more of the following: home, sotw, botw, event, hof.
 
-**Example spreadsheet (Work in progress):** 
+**Example spreadsheet:** 
 
 https://docs.google.com/spreadsheets/d/1YMcXxSL3s1NEzsPVMMkPn7EdGNFKENiwqNyDKkJTO80/
 
