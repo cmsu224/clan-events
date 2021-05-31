@@ -31,6 +31,9 @@ The spreadsheat must be set to public and the sheet tab names must be one or mor
 
 https://docs.google.com/spreadsheets/d/1YMcXxSL3s1NEzsPVMMkPn7EdGNFKENiwqNyDKkJTO80/
 
+Make sure the sheet is public, otherwise the plugin will not be able to read the Google Sheet:
+![image](https://user-images.githubusercontent.com/14130954/120233818-9fc48600-c224-11eb-85f3-86eb7f31290e.png)
+
 The Participant list of BoTW and SoTW on the spreadsheet is directly grabbed from https://templeosrs.com.
 
 The Google Sheet ID and API must be placed in the config in order for the plugin panel to work.
