@@ -80,7 +80,7 @@ public class ClanEventsPlugin extends Plugin
 			panel = injector.getInstance(ClanEventsPanel.class);
 			panel.init(config, 0);
 			uiNavigationButton = NavigationButton.builder()
-					.tooltip("Clan Hub")
+					.tooltip("Clan Events")
 					.icon(icon)
 					.priority(7)
 					.panel(panel)
