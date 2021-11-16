@@ -148,12 +148,16 @@ class ClanEventsPanel extends PluginPanel
                 {
                     try {
                         for (int i = 0; i < ssArea.getComponentCount(); ++i) {
+                            //Search for the button's panel
                             if (ssArea.getComponent(i) == event.getComponent().getParent()) {
+                                //Get the child of the panel directly after the button's panel
                                 Container c = (Container) ssArea.getComponent(i + 1);
                                 if (!c.getComponent(0).getClass().isAssignableFrom(JButton.class)) {
+                                    //Toggle whether the panel is invisible
                                     c.setVisible(!c.isVisible());
-
+                                    //Do this after the panel has been redrawn
                                     SwingUtilities.invokeLater(() -> {
+                                        //If the panel was made visible, auto scroll to show all of its content
                                         if (c.isVisible()) {
                                             ssArea.scrollRectToVisible(c.getBounds());
                                         }
@@ -218,12 +222,11 @@ class ClanEventsPanel extends PluginPanel
 
                     switch (val1) {
                         case "<column>":
-                            //Create panel and table
+                            //Create the panel and table
                             panel = new JPanel(new BorderLayout());
                             panel.setBorder(new EmptyBorder(0, 0, 3, 0));
                             DefaultTableModel model = new DefaultTableModel();
                             JTable table = new JTable(model);
-                            table.setEnabled(false);
 
                             //Add the initial column
                             model.addColumn(null);
@@ -243,6 +246,7 @@ class ClanEventsPanel extends PluginPanel
                                     val2 = "";
                                 }
 
+                                //A new column is being added
                                 if (Objects.equals(val2, "<column>")) {
                                     model.addColumn(null);
                                     hr.add(new ColumnCellRenderer(new DefaultTableCellRenderer()));
@@ -253,7 +257,7 @@ class ClanEventsPanel extends PluginPanel
                                     try {
                                         switch (column_val_idx) {
                                             case 0:
-                                                // The table column header's string
+                                                //The table column header's string
                                                 names.set(model.getColumnCount() - 1, val2);
                                                 break;
 
@@ -307,12 +311,13 @@ class ClanEventsPanel extends PluginPanel
                                                 break;
                                         }
                                     } catch (Exception e) {
-                                        // Invalid value
+                                        //Invalid value
                                     }
                                     ++column_val_idx;
                                 }
                             }
 
+                            //Now that all of the columns have been added, make modifications to them
                             for (i = 0; i < model.getColumnCount(); ++i)
                             {
                                 tc = table.getColumnModel().getColumn(i);
@@ -322,6 +327,7 @@ class ClanEventsPanel extends PluginPanel
                             }
 
                             ++j;
+                            //Add the following rows of data to the table
                             for (; j < rows.length; ++j) {
                                 try {
                                     val2 = rows[j][0];
@@ -336,11 +342,16 @@ class ClanEventsPanel extends PluginPanel
                                 }
                             }
 
+                            //Set the preferred size so the table shows up properly
                             d = new Dimension(table.getPreferredSize().width, table.getRowHeight() * table.getRowCount());
                             table.setPreferredScrollableViewportSize(d);
+                            //Put the table in a scrollpane so that its headers show up
                             JScrollPane scroll = new JScrollPane(table);
                             scroll.removeMouseWheelListener(scroll.getMouseWheelListeners()[0]);
+                            //Disable it to stop the annoying selection stuff
+                            table.setEnabled(false);
                             panel.add(scroll, BorderLayout.NORTH);
+                            //Sets it invisible by default
                             if (setInvisible) {
                                 panel.setVisible(false);
                                 setInvisible = false;
@@ -349,11 +360,13 @@ class ClanEventsPanel extends PluginPanel
                             break;
 
                         case "<button>":
+                            //Create the panel and button html text area
                             panel = new JPanel(new BorderLayout());
                             panel.setBorder(new EmptyBorder(0, 0, 3, 0));
                             JButton button = createHideButton("<html>");
                             setInvisible = true;
 
+                            //Go through the rest of this row's values
                             for (i = 1; i < rows[j].length; ++i)
                             {
                                 try {
@@ -365,6 +378,7 @@ class ClanEventsPanel extends PluginPanel
                                 try {
                                     switch (i - 1) {
                                         case 0:
+                                            //The text's alignment
                                             val2 = val2.toLowerCase();
                                             if (Objects.equals(val2, "left")) {
                                                 style = SwingConstants.LEFT;
@@ -378,27 +392,7 @@ class ClanEventsPanel extends PluginPanel
                                             button.setHorizontalAlignment(style);
 
                                         case 1:
-                                            val2 = val2.replaceAll(" +", " ");
-                                            val2 = val2.replaceAll(", ", ",").toLowerCase();
-                                            str = val2.split(",");
-                                            if (Objects.equals(str[1], "bold")) {
-                                                style = Font.BOLD;
-                                            } else if (Objects.equals(str[1], "italic")) {
-                                                style = Font.ITALIC;
-                                            } else if (Objects.equals(str[1], "plain")) {
-                                                style = Font.PLAIN;
-                                            } else {
-                                                break;
-                                            }
-                                            button.setFont(new Font(str[0], style, Integer.parseInt(str[2])));
-                                            break;
-
-                                        case 2:
-                                            color = (Color) Color.class.getField(val2).get(null);
-                                            button.setForeground(color);
-                                            break;
-
-                                        case 3:
+                                            //Whether to show the following panel by default
                                             val2 = val2.toLowerCase();
                                             if (Objects.equals(val2, "show")) {
                                                 setInvisible = false;
@@ -416,6 +410,7 @@ class ClanEventsPanel extends PluginPanel
                             ++j;
                             newLine = "";
                             addNewline = false;
+                            //Add values to the button html text area, where columns are concatenated with spaces between them and rows start on new lines
                             for (; j < rows.length; ++j) {
 
                                 try {
@@ -442,13 +437,16 @@ class ClanEventsPanel extends PluginPanel
                             break;
 
                         case "<text>":
+                            //Create the panel and text area
                             panel = new JPanel(new BorderLayout());
                             panel.setBorder(new EmptyBorder(0, 0, 3, 0));
                             JTextArea text = new JTextArea();
                             text.setLayout(new BorderLayout());
+                            //Enable text wrapping
                             text.setLineWrap(true);
                             text.setWrapStyleWord(true);
 
+                            //Go through the rest of this row's values
                             for (i = 1; i < rows[j].length; ++i)
                             {
                                 try {
@@ -460,6 +458,7 @@ class ClanEventsPanel extends PluginPanel
                                 try {
                                     switch (i - 1) {
                                         case 0:
+                                            //The text's font
                                             val2 = val2.replaceAll(" +", " ");
                                             val2 = val2.replaceAll(", ", ",").toLowerCase();
                                             str = val2.split(",");
@@ -476,6 +475,7 @@ class ClanEventsPanel extends PluginPanel
                                             break;
 
                                         case 1:
+                                            //The text's font color
                                             color = (Color) Color.class.getField(val2).get(null);
                                             text.setForeground(color);
                                             text.setDisabledTextColor(color);
@@ -492,6 +492,7 @@ class ClanEventsPanel extends PluginPanel
                             ++j;
                             newLine = "";
                             addNewline = false;
+                            //Add values to the text area, where columns are concatenated with spaces between them and rows start on new lines
                             for (; j < rows.length; ++j) {
 
                                 try {
@@ -512,15 +513,19 @@ class ClanEventsPanel extends PluginPanel
                                 }
                             }
 
+                            //Do some weird stuff to make the text display properly
                             d = new Dimension(super.getPreferredSize().width, 100);
                             text.setPreferredSize(d);
                             text.setSize(d);
                             Rectangle2D r = text.modelToView2D(text.getDocument().getLength());
                             d = new Dimension(d.width, (int) (r.getY() + r.getHeight()));
                             text.setPreferredSize(d);
+                            //Set the caret to the start so it doesn't cause auto scroll
                             text.setCaretPosition(0);
+                            //Disable it to stop the annoying selection stuff
                             text.setEnabled(false);
                             panel.add(text, BorderLayout.NORTH);
+                            //Sets it invisible by default
                             if (setInvisible) {
                                 panel.setVisible(false);
                                 setInvisible = false;
@@ -530,12 +535,14 @@ class ClanEventsPanel extends PluginPanel
 
                         case "<html>":
                         default:
+                            //Create the panel and html text area by default
                             panel = new JPanel(new BorderLayout());
                             panel.setBorder(new EmptyBorder(0, 0, 3, 0));
                             JLabel label = new JLabel("<html>");
 
                             newLine = "";
                             addNewline = false;
+                            //Add values to the html text area, where columns are concatenated with spaces between them and rows start on new lines
                             for (; j < rows.length; ++j) {
                                 try {
                                     val2 = String.join(" ", rows[j]);
@@ -557,6 +564,7 @@ class ClanEventsPanel extends PluginPanel
                             }
 
                             panel.add(label, BorderLayout.NORTH);
+                            //Sets it invisible by default
                             if (setInvisible) {
                                 panel.setVisible(false);
                                 setInvisible = false;
