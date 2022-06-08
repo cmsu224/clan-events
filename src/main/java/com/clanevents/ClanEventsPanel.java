@@ -39,6 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.border.EmptyBorder;
@@ -52,6 +53,7 @@ class ClanEventsPanel extends PluginPanel
 {
     private final JPanel ssArea = new JPanel();
     private final GoogleSheet sheet = new GoogleSheet();
+    private final Semaphore sem = new Semaphore(1);
     final JComboBox<ComboBoxIconEntry> dropdown = new JComboBox<>();
 
     void init(ClanEventsConfig config, int index){
@@ -74,7 +76,7 @@ class ClanEventsPanel extends PluginPanel
         icon = ImageUtil.loadImageResource(getClass(), "botw.png");
         dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Boss of the Week", "botw"));
         icon = ImageUtil.loadImageResource(getClass(), "event.png");
-        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Clan Events", "event"));
+        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Clan Events", "events"));
 
         dropdown.addItemListener(e ->
         {
@@ -119,14 +121,30 @@ class ClanEventsPanel extends PluginPanel
             {
                 if (event.getButton() == MouseEvent.BUTTON1)
                 {
-                    ComboBoxIconEntry selected = (ComboBoxIconEntry) dropdown.getSelectedItem();
-                    ssArea.removeAll();
-                    try {
-                        getSheetDataFormatted(selected.getData().toString());
-                    } catch (Exception e) {}
-                    ssArea.revalidate();
-                    ssArea.repaint();
-                    System.out.println("Refreshing...");
+                    if (sem.tryAcquire())
+                    {
+                        System.out.println("Acquired semaphore");
+                        ComboBoxIconEntry selected = (ComboBoxIconEntry) dropdown.getSelectedItem();
+                        ssArea.setVisible(false);
+                        ssArea.removeAll();
+                        try {
+                            getSheetDataFormatted(selected.getData().toString());
+                        } catch (Exception e) {}
+                        ssArea.revalidate();
+                        ssArea.repaint();
+                        System.out.println("Refreshing...");
+                        SwingUtilities.invokeLater(() -> {
+                            try {
+                                Thread.sleep(200);
+                            } catch (Exception e) {}
+                            ssArea.setVisible(true);
+                            sem.release();
+                        });
+                    }
+                    else
+                    {
+                        System.out.println("No semaphore");
+                    }
                 }
             }
         });
@@ -155,13 +173,6 @@ class ClanEventsPanel extends PluginPanel
                                 if (!c.getComponent(0).getClass().isAssignableFrom(JButton.class)) {
                                     //Toggle whether the panel is invisible
                                     c.setVisible(!c.isVisible());
-                                    //Do this after the panel has been redrawn
-                                    SwingUtilities.invokeLater(() -> {
-                                        //If the panel was made visible, auto scroll to show all of its content
-                                        if (c.isVisible()) {
-                                            ssArea.scrollRectToVisible(c.getBounds());
-                                        }
-                                    });
                                 }
                             }
                         }
@@ -188,6 +199,8 @@ class ClanEventsPanel extends PluginPanel
             } else if (values.isEmpty()) {
                 System.out.println("No data found.");
             } else {
+                System.out.println("Data found.");
+
                 JPanel panel;
                 TableColumn tc;
                 String val1;
@@ -201,6 +214,7 @@ class ClanEventsPanel extends PluginPanel
                 String[][] rows = new String[values.size()][];
                 int style;
                 Color color;
+                int align;
                 Dimension d;
                 String newLine;
                 boolean addNewline;
@@ -227,6 +241,7 @@ class ClanEventsPanel extends PluginPanel
                             panel.setBorder(new EmptyBorder(0, 0, 3, 0));
                             DefaultTableModel model = new DefaultTableModel();
                             JTable table = new JTable(model);
+                            table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
                             //Add the initial column
                             model.addColumn(null);
@@ -262,6 +277,11 @@ class ClanEventsPanel extends PluginPanel
                                                 break;
 
                                             case 1:
+                                                //The table column's max width
+                                                hr.get(model.getColumnCount() - 1).setMax(Integer.parseInt(val2));
+                                                cr.get(model.getColumnCount() - 1).setMax(Integer.parseInt(val2));
+
+                                            case 2:
                                                 //The table column header's font
                                                 val2 = val2.replaceAll(" +", " ");
                                                 val2 = val2.replaceAll(", ", ",").toLowerCase();
@@ -278,13 +298,13 @@ class ClanEventsPanel extends PluginPanel
                                                 hr.get(model.getColumnCount() - 1).setFont(new Font(str[0], style, Integer.parseInt(str[2])));
                                                 break;
 
-                                            case 2:
+                                            case 3:
                                                 //The table column header's font color
                                                 color = (Color) Color.class.getField(val2).get(null);
                                                 hr.get(model.getColumnCount() - 1).setColor(color);
                                                 break;
 
-                                            case 3:
+                                            case 4:
                                                 //The table column cells' font
                                                 val2 = val2.replaceAll(" +", " ");
                                                 val2 = val2.replaceAll(", ", ",").toLowerCase();
@@ -301,7 +321,7 @@ class ClanEventsPanel extends PluginPanel
                                                 cr.get(model.getColumnCount() - 1).setFont(new Font(str[0], style, Integer.parseInt(str[2])));
                                                 break;
 
-                                            case 4:
+                                            case 5:
                                                 //The table column cells' font color
                                                 color = (Color) Color.class.getField(val2).get(null);
                                                 cr.get(model.getColumnCount() - 1).setColor(color);
@@ -321,6 +341,7 @@ class ClanEventsPanel extends PluginPanel
                             for (i = 0; i < model.getColumnCount(); ++i)
                             {
                                 tc = table.getColumnModel().getColumn(i);
+                                tc.setPreferredWidth(0);
                                 tc.setHeaderValue(names.get(i));
                                 tc.setHeaderRenderer(hr.get(i));
                                 tc.setCellRenderer(cr.get(i));
@@ -347,9 +368,11 @@ class ClanEventsPanel extends PluginPanel
                             table.setPreferredScrollableViewportSize(d);
                             //Put the table in a scrollpane so that its headers show up
                             JScrollPane scroll = new JScrollPane(table);
+                            scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
                             scroll.removeMouseWheelListener(scroll.getMouseWheelListeners()[0]);
                             //Disable it to stop the annoying selection stuff
                             table.setEnabled(false);
+                            scroll.setEnabled(false);
                             panel.add(scroll, BorderLayout.NORTH);
                             //Sets it invisible by default
                             if (setInvisible) {
@@ -364,6 +387,7 @@ class ClanEventsPanel extends PluginPanel
                             panel = new JPanel(new BorderLayout());
                             panel.setBorder(new EmptyBorder(0, 0, 3, 0));
                             JButton button = createHideButton("<html>");
+                            button.setBorder(new EmptyBorder(3, 3, 3, 3));
                             setInvisible = true;
 
                             //Go through the rest of this row's values
@@ -534,6 +558,7 @@ class ClanEventsPanel extends PluginPanel
                             break;
 
                         case "<html>":
+                            ++j;
                         default:
                             //Create the panel and html text area by default
                             panel = new JPanel(new BorderLayout());
