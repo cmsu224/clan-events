@@ -29,11 +29,13 @@ package com.clanevents;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
+import java.net.URI;
 import java.util.*;
 import javax.swing.*;
 
 import com.clanevents.components.combobox.ComboBoxIconEntry;
 import com.clanevents.components.combobox.ComboBoxIconListRenderer;
+import com.jogamp.common.net.Uri;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import java.awt.Color;
@@ -71,10 +73,10 @@ class ClanEventsPanel extends PluginPanel
 
         BufferedImage icon = ImageUtil.loadImageResource(getClass(), "home.png");
         dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Home", "home"));
-        icon = ImageUtil.loadImageResource(getClass(), "sotw.png");
-        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Skill of the Week", "sotw"));
-        icon = ImageUtil.loadImageResource(getClass(), "botw.png");
-        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Boss of the Week", "botw"));
+        //icon = ImageUtil.loadImageResource(getClass(), "sotw.png");
+        //dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Skill of the Week", "sotw"));
+        //icon = ImageUtil.loadImageResource(getClass(), "botw.png");
+        //dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Boss of the Week", "botw"));
         icon = ImageUtil.loadImageResource(getClass(), "event.png");
         dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Clan Events", "events"));
 
@@ -150,6 +152,56 @@ class ClanEventsPanel extends PluginPanel
         });
 
         return button;
+    }
+
+    private JButton createLinkButton(String text)
+    {
+        final JButton button = new JButton(text);
+        button.setFocusable(false);
+        button.addMouseListener(new MouseAdapter()
+        {
+            @SneakyThrows
+            @Override
+            public void mousePressed(MouseEvent event)
+            {
+                if (event.getButton() == MouseEvent.BUTTON1)
+                {
+                    try {
+                        for (int i = 0; i < ssArea.getComponentCount(); ++i) {
+                            //Search for the button's panel
+                            if (ssArea.getComponent(i) == event.getComponent().getParent()) {
+                                //Get the child of the panel directly after the button's panel
+                                Container c = (Container) ssArea.getComponent(i + 1);
+                                if (!c.getComponent(0).getClass().isAssignableFrom(JButton.class)) {
+                                    //Toggle whether the panel is invisible
+                                    //c.setVisible(!c.isVisible());
+                                    JTextArea textArea = (JTextArea )c.getComponent(0);
+                                    String url = textArea.getText();
+                                    URI myURI = new URI(url);
+                                    openWebpage(myURI);
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception e) {}
+                }
+            }
+        });
+
+        return button;
+    }
+
+    public static boolean openWebpage(URI uri) {
+        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+            try {
+                desktop.browse(uri);
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 
     private JButton createHideButton(String text)
@@ -379,6 +431,84 @@ class ClanEventsPanel extends PluginPanel
                                 panel.setVisible(false);
                                 setInvisible = false;
                             }
+                            ssArea.add(panel);
+                            break;
+
+                        case "<buttonlink>":
+                            //Create the panel and button html text area
+                            panel = new JPanel(new BorderLayout());
+                            panel.setBorder(new EmptyBorder(0, 0, 3, 0));
+                            JButton buttonlink = createLinkButton("<html>");
+                            buttonlink.setBorder(new EmptyBorder(3, 3, 3, 3));
+                            setInvisible = true;
+
+                            //Go through the rest of this row's values
+                            for (i = 1; i < rows[j].length; ++i)
+                            {
+                                try {
+                                    val2 = rows[j][i].trim();
+                                } catch (Exception e) {
+                                    val2 = "";
+                                }
+
+                                try {
+                                    switch (i - 1) {
+                                        case 0:
+                                            //The text's alignment
+                                            val2 = val2.toLowerCase();
+                                            if (Objects.equals(val2, "left")) {
+                                                style = SwingConstants.LEFT;
+                                            } else if (Objects.equals(val2, "right")) {
+                                                style = SwingConstants.RIGHT;
+                                            } else if (Objects.equals(val2, "center")) {
+                                                style = SwingConstants.CENTER;
+                                            } else {
+                                                break;
+                                            }
+                                            buttonlink.setHorizontalAlignment(style);
+
+                                        case 1:
+                                            //Whether to show the following panel by default
+                                            val2 = val2.toLowerCase();
+                                            if (Objects.equals(val2, "show")) {
+                                                setInvisible = false;
+                                            }
+                                            break;
+
+                                        default:
+                                            break;
+                                    }
+                                } catch (Exception e) {
+                                    // Invalid value
+                                }
+                            }
+
+                            ++j;
+                            newLine = "";
+                            addNewline = false;
+                            //Add values to the button html text area, where columns are concatenated with spaces between them and rows start on new lines
+                            for (; j < rows.length; ++j) {
+
+                                try {
+                                    val2 = String.join(" ", rows[j]);
+                                } catch (Exception e) {
+                                    val2 = "";
+                                }
+
+                                if (Objects.equals(val2.trim().toLowerCase(), "</buttonlink>")) {
+                                    buttonlink.setText(buttonlink.getText() + "</html>");
+                                    break;
+                                } else {
+                                    buttonlink.setText(buttonlink.getText() + newLine + val2);
+                                }
+
+                                if (!addNewline) {
+                                    newLine = "<br>";
+                                    addNewline = true;
+                                }
+                            }
+
+                            panel.add(buttonlink, BorderLayout.NORTH);
                             ssArea.add(panel);
                             break;
 
