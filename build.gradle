@@ -10,10 +10,10 @@ repositories {
 	mavenCentral()
 }
 
-def runeLiteVersion = '1.7.4'
+def runeLiteVersion = '1.8.21'
 
 dependencies {
-	implementation('com.google.apis:google-api-services-sheets:v4-rev581-1.25.0')
+	implementation('com.google.apis:google-api-services-sheets:v4-rev20210629-1.32.1')
 	{
 		exclude group: 'com.google.guava'
 		exclude group: 'com.google.oauth-client'
@@ -25,17 +25,18 @@ dependencies {
 	}
 	compileOnly group: 'net.runelite', name:'client', version: runeLiteVersion
 
-	compileOnly 'org.projectlombok:lombok:1.18.4'
-	annotationProcessor 'org.projectlombok:lombok:1.18.4'
+	compileOnly 'org.projectlombok:lombok:1.18.22'
+	annotationProcessor 'org.projectlombok:lombok:1.18.22'
 
-	testImplementation 'junit:junit:4.12'
+	testImplementation 'junit:junit:4.13.2'
 	testImplementation group: 'net.runelite', name:'client', version: runeLiteVersion
 }
 
-group = 'com.example'
-version = '1.0-SNAPSHOT'
-sourceCompatibility = '1.8'
+group = 'clanevents'
+version = '2.0'
+sourceCompatibility = "1.9"
 
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 }
+targetCompatibility = JavaVersion.VERSION_1_9
