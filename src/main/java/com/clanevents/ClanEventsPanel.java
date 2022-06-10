@@ -73,12 +73,16 @@ class ClanEventsPanel extends PluginPanel
 
         BufferedImage icon = ImageUtil.loadImageResource(getClass(), "home.png");
         dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Home", "home"));
-        //icon = ImageUtil.loadImageResource(getClass(), "sotw.png");
-        //dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Skill of the Week", "sotw"));
-        //icon = ImageUtil.loadImageResource(getClass(), "botw.png");
-        //dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Boss of the Week", "botw"));
+        icon = ImageUtil.loadImageResource(getClass(), "sotw.png");
+        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Skill of the Week", "sotw"));
+        icon = ImageUtil.loadImageResource(getClass(), "botw.png");
+        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Boss of the Week", "botw"));
         icon = ImageUtil.loadImageResource(getClass(), "event.png");
-        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Clan Events", "events"));
+        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Clan Events", "event"));
+        icon = ImageUtil.loadImageResource(getClass(), "hof.png");
+        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Hall of Fame - Overall", "hof_overall"));
+        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Hall of Fame - KC", "hof_kc"));
+        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Hall of Fame - PB", "hof_pb"));
 
         dropdown.addItemListener(e ->
         {
@@ -98,9 +102,6 @@ class ClanEventsPanel extends PluginPanel
         dropdown.setSelectedIndex(index);
         this.add(dropdown);
 
-        //Refresh Button
-        this.add(createRefreshButton(config), BorderLayout.NORTH);
-
         //Bottom Textarea
         ComboBoxIconEntry selected = (ComboBoxIconEntry) dropdown.getSelectedItem();
 
@@ -109,6 +110,9 @@ class ClanEventsPanel extends PluginPanel
         } catch (Exception e) {}
         System.out.println("Adding panel to clan events tab");
         this.add(ssArea, BorderLayout.NORTH);
+
+        //Refresh Button
+        this.add(createRefreshButton(config), BorderLayout.NORTH);
     }
 
     private JButton createRefreshButton(ClanEventsConfig config)
