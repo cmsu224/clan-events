@@ -113,7 +113,7 @@ public interface ClanEventsConfig extends Config
 	)
 	default String sheetId()
 	{
-		return "1RR7zf0b1iyhQRUwATj96Zfx2LtjwM5FHhmIeW0O3aSc";
+		return "1YMcXxSL3s1NEzsPVMMkPn7EdGNFKENiwqNyDKkJTO80";
 	}
 
 	@ConfigItem(
@@ -128,27 +128,4 @@ public interface ClanEventsConfig extends Config
 		return "";
 	}
 
-	@ConfigItem(
-			position = 3,
-			keyName = "col1color",
-			name = "Column 1 Color",
-			description = "Configures the color of the spreadsheet column displayed",
-			section = gSheetsSection
-	)
-	default Color col1color()
-	{
-		return Color.white;
-	}
-
-	@ConfigItem(
-			position = 4,
-			keyName = "col2color",
-			name = "Column 2 Color",
-			description = "Configures the color of the spreadsheet column displayed",
-			section = gSheetsSection
-	)
-	default Color col2color()
-	{
-		return Color.GREEN;
-	}
 }
