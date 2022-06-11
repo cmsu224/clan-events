@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class ColumnCellRenderer implements TableCellRenderer
 {
-    private TableCellRenderer original;
+    private final TableCellRenderer original;
     private Font font = null;
     private Color color = null;
     private int max = 20;

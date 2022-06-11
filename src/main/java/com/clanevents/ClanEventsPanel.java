@@ -28,14 +28,12 @@ package com.clanevents;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.Rectangle2D;
 import java.net.URI;
 import java.util.*;
 import javax.swing.*;
 
 import com.clanevents.components.combobox.ComboBoxIconEntry;
 import com.clanevents.components.combobox.ComboBoxIconListRenderer;
-import com.jogamp.common.net.Uri;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import java.awt.Color;
@@ -58,9 +56,10 @@ class ClanEventsPanel extends PluginPanel
     private final Semaphore sem = new Semaphore(1);
     final JComboBox<ComboBoxIconEntry> dropdown = new JComboBox<>();
 
-    void init(ClanEventsConfig config, int index){
+    void init(ClanEventsConfig config, @SuppressWarnings("SameParameterValue") int index){
+        Object obj2;
+
         // Google sheet API
-        String data = "";
         sheet.setKey(config.apiKey());
         sheet.setSheetId(config.sheetId());
         ssArea.setLayout(new BoxLayout(ssArea, BoxLayout.Y_AXIS));
@@ -84,15 +83,18 @@ class ClanEventsPanel extends PluginPanel
         dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Hall of Fame - KC", "hof_kc"));
         dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Hall of Fame - PB", "hof_pb"));
 
-        dropdown.addItemListener(e ->
+        dropdown.addItemListener(event ->
         {
-            if (e.getStateChange() == ItemEvent.SELECTED)
+            if (event.getStateChange() == ItemEvent.SELECTED)
             {
-                final ComboBoxIconEntry source = (ComboBoxIconEntry) e.getItem();
+                final ComboBoxIconEntry source = (ComboBoxIconEntry) event.getItem();
                 ssArea.removeAll();
                 try {
-                    getSheetDataFormatted(source.getData().toString());
-                } catch (Exception exc) {}
+                    Object obj1 = source.getData();
+                    if (obj1 != null) {
+                        getSheetDataFormatted(obj1.toString());
+                    }
+                } catch (Exception ignored) {}
                 ssArea.revalidate();
                 ssArea.repaint();
                 System.out.println("State changing...");
@@ -105,17 +107,24 @@ class ClanEventsPanel extends PluginPanel
         //Bottom Textarea
         ComboBoxIconEntry selected = (ComboBoxIconEntry) dropdown.getSelectedItem();
 
+        //Refresh Button
+        this.add(createRefreshButton(), BorderLayout.NORTH);
+
         try {
-            getSheetDataFormatted(selected.getData().toString());
-        } catch (Exception e) {}
+            if (selected != null) {
+                obj2 = selected.getData();
+                if (obj2 != null) {
+                    getSheetDataFormatted(obj2.toString());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         System.out.println("Adding panel to clan events tab");
         this.add(ssArea, BorderLayout.NORTH);
-
-        //Refresh Button
-        this.add(createRefreshButton(config), BorderLayout.NORTH);
     }
 
-    private JButton createRefreshButton(ClanEventsConfig config)
+    private JButton createRefreshButton()
     {
         final JButton button = new JButton("Refresh");
         button.setFocusable(false);
@@ -134,15 +143,25 @@ class ClanEventsPanel extends PluginPanel
                         ssArea.setVisible(false);
                         ssArea.removeAll();
                         try {
-                            getSheetDataFormatted(selected.getData().toString());
-                        } catch (Exception e) {}
+                            if (selected != null) {
+                                Object obj1 = selected.getData();
+                                if (obj1 != null) {
+                                    getSheetDataFormatted(obj1.toString());
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
                         ssArea.revalidate();
                         ssArea.repaint();
                         System.out.println("Refreshing...");
                         SwingUtilities.invokeLater(() -> {
                             try {
                                 Thread.sleep(200);
-                            } catch (Exception e) {}
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                             ssArea.setVisible(true);
                             sem.release();
                         });
@@ -158,9 +177,9 @@ class ClanEventsPanel extends PluginPanel
         return button;
     }
 
-    private JButton createLinkButton(String text)
+    private JButton createLinkButton()
     {
-        final JButton button = new JButton(text);
+        final JButton button = new JButton("<html>");
         button.setFocusable(false);
         button.addMouseListener(new MouseAdapter()
         {
@@ -187,7 +206,9 @@ class ClanEventsPanel extends PluginPanel
                             }
                         }
                     }
-                    catch (Exception e) {}
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -195,22 +216,20 @@ class ClanEventsPanel extends PluginPanel
         return button;
     }
 
-    public static boolean openWebpage(URI uri) {
+    public static void openWebpage(URI uri) {
         Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
         if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
             try {
                 desktop.browse(uri);
-                return true;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return false;
     }
 
-    private JButton createHideButton(String text)
+    private JButton createHideButton()
     {
-        final JButton button = new JButton(text);
+        final JButton button = new JButton("<html>");
         button.setFocusable(false);
         button.addMouseListener(new MouseAdapter()
         {
@@ -233,7 +252,9 @@ class ClanEventsPanel extends PluginPanel
                             }
                         }
                     }
-                    catch (Exception e) {}
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -244,11 +265,10 @@ class ClanEventsPanel extends PluginPanel
     private void getSheetDataFormatted(String field)
     {
         System.out.println("Checking sheet for data");
-        String data = "";
-        List<List<Object>> values = null;
+        List<List<Object>> values;
 
         try {
-            values = sheet.getValues(field);
+            values = GoogleSheet.getValues(field);
 
             if (values == null) {
                 System.out.println("Failed to get data from sheet.");
@@ -258,6 +278,7 @@ class ClanEventsPanel extends PluginPanel
                 System.out.println("Data found.");
 
                 JPanel panel;
+                JScrollPane scroll;
                 TableColumn tc;
                 String val1;
                 String val2;
@@ -270,7 +291,6 @@ class ClanEventsPanel extends PluginPanel
                 String[][] rows = new String[values.size()][];
                 int style;
                 Color color;
-                int align;
                 Dimension d;
                 String newLine;
                 boolean addNewline;
@@ -342,14 +362,19 @@ class ClanEventsPanel extends PluginPanel
                                                 val2 = val2.replaceAll(" +", " ");
                                                 val2 = val2.replaceAll(", ", ",").toLowerCase();
                                                 str = val2.split(",");
-                                                if (Objects.equals(str[1], "bold")) {
-                                                    style = Font.BOLD;
-                                                } else if (Objects.equals(str[1], "italic")) {
-                                                    style = Font.ITALIC;
-                                                } else if (Objects.equals(str[1], "plain")) {
-                                                    style = Font.PLAIN;
-                                                } else {
-                                                    break;
+
+                                                switch(str[1]) {
+                                                    case "bold":
+                                                        style = Font.BOLD;
+                                                        break;
+
+                                                    case "italic":
+                                                        style = Font.ITALIC;
+                                                        break;
+
+                                                    default:
+                                                        style = Font.PLAIN;
+                                                        break;
                                                 }
                                                 hr.get(model.getColumnCount() - 1).setFont(new Font(str[0], style, Integer.parseInt(str[2])));
                                                 break;
@@ -365,14 +390,19 @@ class ClanEventsPanel extends PluginPanel
                                                 val2 = val2.replaceAll(" +", " ");
                                                 val2 = val2.replaceAll(", ", ",").toLowerCase();
                                                 str = val2.split(",");
-                                                if (Objects.equals(str[1], "bold")) {
-                                                    style = Font.BOLD;
-                                                } else if (Objects.equals(str[1], "italic")) {
-                                                    style = Font.ITALIC;
-                                                } else if (Objects.equals(str[1], "plain")) {
-                                                    style = Font.PLAIN;
-                                                } else {
-                                                    break;
+
+                                                switch(str[1]) {
+                                                    case "bold":
+                                                        style = Font.BOLD;
+                                                        break;
+
+                                                    case "italic":
+                                                        style = Font.ITALIC;
+                                                        break;
+
+                                                    default:
+                                                        style = Font.PLAIN;
+                                                        break;
                                                 }
                                                 cr.get(model.getColumnCount() - 1).setFont(new Font(str[0], style, Integer.parseInt(str[2])));
                                                 break;
@@ -419,11 +449,11 @@ class ClanEventsPanel extends PluginPanel
                                 }
                             }
 
-                            //Set the preferred size so the table shows up properly
+                            //Set the preferred size so that a bunch of extra space isn't added below the table
                             d = new Dimension(table.getPreferredSize().width, table.getRowHeight() * table.getRowCount());
                             table.setPreferredScrollableViewportSize(d);
-                            //Put the table in a scrollpane so that its headers show up
-                            JScrollPane scroll = new JScrollPane(table);
+                            //Put it in a scrollpane so that the panel is the correct size
+                            scroll = new JScrollPane(table);
                             scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
                             scroll.removeMouseWheelListener(scroll.getMouseWheelListeners()[0]);
                             //Disable it to stop the annoying selection stuff
@@ -442,7 +472,7 @@ class ClanEventsPanel extends PluginPanel
                             //Create the panel and button html text area
                             panel = new JPanel(new BorderLayout());
                             panel.setBorder(new EmptyBorder(0, 0, 3, 0));
-                            JButton buttonlink = createLinkButton("<html>");
+                            JButton buttonlink = createLinkButton();
                             buttonlink.setBorder(new EmptyBorder(3, 3, 3, 3));
                             setInvisible = true;
 
@@ -460,14 +490,19 @@ class ClanEventsPanel extends PluginPanel
                                         case 0:
                                             //The text's alignment
                                             val2 = val2.toLowerCase();
-                                            if (Objects.equals(val2, "left")) {
-                                                style = SwingConstants.LEFT;
-                                            } else if (Objects.equals(val2, "right")) {
-                                                style = SwingConstants.RIGHT;
-                                            } else if (Objects.equals(val2, "center")) {
-                                                style = SwingConstants.CENTER;
-                                            } else {
-                                                break;
+
+                                            switch(val2) {
+                                                case "right":
+                                                    style = SwingConstants.RIGHT;
+                                                    break;
+
+                                                case "center":
+                                                    style = SwingConstants.CENTER;
+                                                    break;
+
+                                                default:
+                                                    style = SwingConstants.LEFT;
+                                                    break;
                                             }
                                             buttonlink.setHorizontalAlignment(style);
 
@@ -520,7 +555,7 @@ class ClanEventsPanel extends PluginPanel
                             //Create the panel and button html text area
                             panel = new JPanel(new BorderLayout());
                             panel.setBorder(new EmptyBorder(0, 0, 3, 0));
-                            JButton button = createHideButton("<html>");
+                            JButton button = createHideButton();
                             button.setBorder(new EmptyBorder(3, 3, 3, 3));
                             setInvisible = true;
 
@@ -538,14 +573,19 @@ class ClanEventsPanel extends PluginPanel
                                         case 0:
                                             //The text's alignment
                                             val2 = val2.toLowerCase();
-                                            if (Objects.equals(val2, "left")) {
-                                                style = SwingConstants.LEFT;
-                                            } else if (Objects.equals(val2, "right")) {
-                                                style = SwingConstants.RIGHT;
-                                            } else if (Objects.equals(val2, "center")) {
-                                                style = SwingConstants.CENTER;
-                                            } else {
-                                                break;
+
+                                            switch(val2) {
+                                                case "right":
+                                                    style = SwingConstants.RIGHT;
+                                                    break;
+
+                                                case "center":
+                                                    style = SwingConstants.CENTER;
+                                                    break;
+
+                                                default:
+                                                    style = SwingConstants.LEFT;
+                                                    break;
                                             }
                                             button.setHorizontalAlignment(style);
 
@@ -599,6 +639,7 @@ class ClanEventsPanel extends PluginPanel
                             panel = new JPanel(new BorderLayout());
                             panel.setBorder(new EmptyBorder(0, 0, 3, 0));
                             JTextArea text = new JTextArea();
+                            text.setBorder(new EmptyBorder(3, 3, 4, 4));
                             text.setLayout(new BorderLayout());
                             //Enable text wrapping
                             text.setLineWrap(true);
@@ -620,14 +661,19 @@ class ClanEventsPanel extends PluginPanel
                                             val2 = val2.replaceAll(" +", " ");
                                             val2 = val2.replaceAll(", ", ",").toLowerCase();
                                             str = val2.split(",");
-                                            if (Objects.equals(str[1], "bold")) {
-                                                style = Font.BOLD;
-                                            } else if (Objects.equals(str[1], "italic")) {
-                                                style = Font.ITALIC;
-                                            } else if (Objects.equals(str[1], "plain")) {
-                                                style = Font.PLAIN;
-                                            } else {
-                                                break;
+
+                                            switch(str[1]) {
+                                                case "bold":
+                                                    style = Font.BOLD;
+                                                    break;
+
+                                                case "italic":
+                                                    style = Font.ITALIC;
+                                                    break;
+
+                                                default:
+                                                    style = Font.PLAIN;
+                                                    break;
                                             }
                                             text.setFont(new Font(str[0], style, Integer.parseInt(str[2])));
                                             break;
@@ -671,18 +717,14 @@ class ClanEventsPanel extends PluginPanel
                                 }
                             }
 
-                            //Do some weird stuff to make the text display properly
-                            d = new Dimension(super.getPreferredSize().width, 100);
-                            text.setPreferredSize(d);
-                            text.setSize(d);
-                            Rectangle2D r = text.modelToView2D(text.getDocument().getLength());
-                            d = new Dimension(d.width, (int) (r.getY() + r.getHeight()));
-                            text.setPreferredSize(d);
-                            //Set the caret to the start so it doesn't cause auto scroll
-                            text.setCaretPosition(0);
+                            //Put it in a scrollpane so that the panel is the correct size
+                            scroll = new JScrollPane(text);
+                            scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+                            scroll.removeMouseWheelListener(scroll.getMouseWheelListeners()[0]);
+                            scroll.setBorder(new EmptyBorder(0, 0, -1, -1));
                             //Disable it to stop the annoying selection stuff
                             text.setEnabled(false);
-                            panel.add(text, BorderLayout.NORTH);
+                            panel.add(scroll, BorderLayout.NORTH);
                             //Sets it invisible by default
                             if (setInvisible) {
                                 panel.setVisible(false);
@@ -736,7 +778,7 @@ class ClanEventsPanel extends PluginPanel
         }
         catch (Exception e)
         {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 }

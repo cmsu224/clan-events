@@ -72,7 +72,7 @@ public interface ClanEventsConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 4,
+			position = 5,
 			keyName = "disclaimer",
 			name = "Colors MUST be different:",
 			description = "The Password color and the Date/Time color must be different",
@@ -81,7 +81,7 @@ public interface ClanEventsConfig extends Config
 	default void disclaimer() {}
 
 	@ConfigItem(
-			position = 5,
+			position = 6,
 			keyName = "passColor",
 			name = "Password Color",
 			description = "Configures the color of the passphrase",
@@ -93,7 +93,7 @@ public interface ClanEventsConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 10,
+			position = 7,
 			keyName = "timeColor",
 			name = "Time Color",
 			description = "Configures the color of the date and time",
@@ -105,7 +105,7 @@ public interface ClanEventsConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 6,
+			position = 1,
 			keyName = "sheetId",
 			name = "Google Sheet ID (Restart plugin)",
 			description = "ID of the google sheet to read.  You may need to restart the plugin after you have changed this.",
@@ -113,11 +113,11 @@ public interface ClanEventsConfig extends Config
 	)
 	default String sheetId()
 	{
-		return "1YMcXxSL3s1NEzsPVMMkPn7EdGNFKENiwqNyDKkJTO80";
+		return "1RR7zf0b1iyhQRUwATj96Zfx2LtjwM5FHhmIeW0O3aSc";
 	}
 
 	@ConfigItem(
-			position = 7,
+			position = 2,
 			keyName = "apiKey",
 			name = "Google Sheet API Key",
 			description = "Google project API Key (ask your clan for one).  You may need to restart the plugin after you have changed this.",
@@ -129,7 +129,7 @@ public interface ClanEventsConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 8,
+			position = 3,
 			keyName = "col1color",
 			name = "Column 1 Color",
 			description = "Configures the color of the spreadsheet column displayed",
@@ -141,7 +141,7 @@ public interface ClanEventsConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 9,
+			position = 4,
 			keyName = "col2color",
 			name = "Column 2 Color",
 			description = "Configures the color of the spreadsheet column displayed",
