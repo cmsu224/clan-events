@@ -14,7 +14,7 @@ import net.runelite.client.util.Text;
 /**
  * Based off the {@link ComboBoxListRenderer} but supports icons and default text value
  */
-public final class ComboBoxIconListRenderer extends JLabel implements ListCellRenderer
+public final class ComboBoxIconListRenderer extends JLabel implements ListCellRenderer<Object>
 {
     @Setter
     private String defaultText = "Select an option...";
@@ -44,7 +44,7 @@ public final class ComboBoxIconListRenderer extends JLabel implements ListCellRe
         }
         else if (o instanceof Enum)
         {
-            text = Text.titleCase((Enum) o);
+            text = Text.titleCase((Enum<?>) o);
         }
         else if (o instanceof ComboBoxIconEntry)
         {
