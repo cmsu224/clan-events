@@ -298,6 +298,7 @@ class ClanEventsPanel extends PluginPanel
 
                 j = 0;
                 for (List<Object> lst : values) {
+                    //noinspection SuspiciousToArrayCall
                     rows[j++] = lst.toArray(new String[0]);
                 }
 
@@ -740,6 +741,7 @@ class ClanEventsPanel extends PluginPanel
                             panel = new JPanel(new BorderLayout());
                             panel.setBorder(new EmptyBorder(0, 0, 3, 0));
                             JLabel label = new JLabel("<html>");
+                            label.setBorder(new EmptyBorder(3, 3, 3, 3));
 
                             newLine = "";
                             addNewline = false;
