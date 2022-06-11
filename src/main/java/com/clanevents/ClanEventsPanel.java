@@ -675,7 +675,8 @@ class ClanEventsPanel extends PluginPanel
                             d = new Dimension(super.getPreferredSize().width, 100);
                             text.setPreferredSize(d);
                             text.setSize(d);
-                            Rectangle2D r = text.modelToView2D(text.getDocument().getLength());
+
+                            Rectangle2D r = new Rectangle2D.Float(text.getBounds().x, text.getBounds().y, text.getBounds().width, text.getBounds().height);
                             d = new Dimension(d.width, (int) (r.getY() + r.getHeight()));
                             text.setPreferredSize(d);
                             //Set the caret to the start so it doesn't cause auto scroll
