@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.*;
 
@@ -55,16 +56,51 @@ class ClanEventsPanel extends PluginPanel
     private final GoogleSheet sheet = new GoogleSheet();
     private final Semaphore sem = new Semaphore(1);
     final JComboBox<ComboBoxIconEntry> dropdown = new JComboBox<>();
+    private final ActionListener timertask = event -> {
+        Object obj;
 
-    void init(ClanEventsConfig config, @SuppressWarnings("SameParameterValue") int index){
-        Object obj2;
+        //Bottom Textarea
+        ComboBoxIconEntry selected = (ComboBoxIconEntry) dropdown.getSelectedItem();
 
-        // Google sheet API
+        ssArea.removeAll();
+
+        try {
+            if (selected != null) {
+                obj = selected.getData();
+                if (obj != null) {
+                    getSheetDataFormatted(obj.toString());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ssArea.revalidate();
+        ssArea.repaint();
+        ssArea.setVisible(true);
+    };
+    private final Timer timer = new Timer(0, timertask);
+
+    void init(ClanEventsConfig config){
+
+        System.out.println("Initializing clan events panel");
+
+        //Timer task
+        if (config.autoRefresh()) {
+            timer.setRepeats(true);
+            timer.setDelay(config.refreshPeriod() * 1000 * 60);
+        }
+        else {
+            timer.setRepeats(false);
+        }
+
+        //Google sheet API
         sheet.setKey(config.apiKey());
         sheet.setSheetId(config.sheetId());
+        sheet.setTimeout(config.requestTimeout());
         ssArea.setLayout(new BoxLayout(ssArea, BoxLayout.Y_AXIS));
 
-        //dropdown menu
+        //Dropdown menu
         dropdown.setFocusable(false); // To prevent an annoying "focus paint" effect
         dropdown.setForeground(Color.WHITE);
         final ComboBoxIconListRenderer renderer = new ComboBoxIconListRenderer();
@@ -87,40 +123,18 @@ class ClanEventsPanel extends PluginPanel
         {
             if (event.getStateChange() == ItemEvent.SELECTED)
             {
-                final ComboBoxIconEntry source = (ComboBoxIconEntry) event.getItem();
-                ssArea.removeAll();
-                try {
-                    Object obj1 = source.getData();
-                    if (obj1 != null) {
-                        getSheetDataFormatted(obj1.toString());
-                    }
-                } catch (Exception ignored) {}
-                ssArea.revalidate();
-                ssArea.repaint();
+                ssArea.setVisible(false);
+                timer.restart();
                 System.out.println("State changing...");
             }
         });
 
-        dropdown.setSelectedIndex(index);
+        dropdown.setSelectedIndex(0);
         this.add(dropdown);
-
-        //Bottom Textarea
-        ComboBoxIconEntry selected = (ComboBoxIconEntry) dropdown.getSelectedItem();
 
         //Refresh Button
         this.add(createRefreshButton(), BorderLayout.NORTH);
 
-        try {
-            if (selected != null) {
-                obj2 = selected.getData();
-                if (obj2 != null) {
-                    getSheetDataFormatted(obj2.toString());
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("Adding panel to clan events tab");
         this.add(ssArea, BorderLayout.NORTH);
     }
 
@@ -139,22 +153,8 @@ class ClanEventsPanel extends PluginPanel
                     if (sem.tryAcquire())
                     {
                         System.out.println("Acquired semaphore");
-                        ComboBoxIconEntry selected = (ComboBoxIconEntry) dropdown.getSelectedItem();
                         ssArea.setVisible(false);
-                        ssArea.removeAll();
-                        try {
-                            if (selected != null) {
-                                Object obj1 = selected.getData();
-                                if (obj1 != null) {
-                                    getSheetDataFormatted(obj1.toString());
-                                }
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        ssArea.revalidate();
-                        ssArea.repaint();
+                        timer.restart();
                         System.out.println("Refreshing...");
                         SwingUtilities.invokeLater(() -> {
                             try {
@@ -271,11 +271,11 @@ class ClanEventsPanel extends PluginPanel
             values = GoogleSheet.getValues(field);
 
             if (values == null) {
-                System.out.println("Failed to get data from sheet.");
+                System.out.println("Failed to get data from sheet");
             } else if (values.isEmpty()) {
-                System.out.println("No data found.");
+                System.out.println("No data found");
             } else {
-                System.out.println("Data found.");
+                System.out.println("Data found");
 
                 JPanel panel;
                 JScrollPane scroll;
@@ -782,6 +782,19 @@ class ClanEventsPanel extends PluginPanel
         {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onActivate() {
+        ssArea.setVisible(false);
+        timer.start();
+        System.out.println("Timer started");
+    }
+
+    @Override
+    public void onDeactivate() {
+        timer.stop();
+        System.out.println("Timer stopped");
     }
 }
 

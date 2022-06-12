@@ -49,21 +49,21 @@ public class ClanEventsPlugin extends Plugin
 	static final String CONFIG_GROUP = "clanevents";
 
 	@Override
-	protected void startUp() throws Exception
+	protected void startUp()
 	{
 		overlayManager.add(overlay);
 		startClanPanel();
 	}
 
 	@Override
-	protected void shutDown() throws Exception
+	protected void shutDown()
 	{
 		overlayManager.remove(overlay);
 		clientToolbar.removeNavigation(uiNavigationButton);
 	}
 
 	@Subscribe
-	private void onConfigChanged(ConfigChanged event) throws IOException {
+	private void onConfigChanged(ConfigChanged event) {
 		if (event.getGroup().equals(CONFIG_GROUP))
 		{
 			panel.removeAll();
@@ -78,7 +78,7 @@ public class ClanEventsPlugin extends Plugin
 		{
 			final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "icon.png");
 			panel = injector.getInstance(ClanEventsPanel.class);
-			panel.init(config, 0);
+			panel.init(config);
 			uiNavigationButton = NavigationButton.builder()
 					.tooltip("Clan Events")
 					.icon(icon)

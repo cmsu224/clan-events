@@ -13,6 +13,7 @@ public class GoogleSheet {
     private static final String APPLICATION_NAME = "Google Sheets API Java Quickstart";
     private static Object API_KEY;
     private static String spreadsheetId;
+    private static int httpTimeout;
 
     public void setKey(String appKey)
     {
@@ -24,10 +25,13 @@ public class GoogleSheet {
         spreadsheetId = sheetID;
     }
 
+    public void setTimeout(int timeout) { httpTimeout = timeout; }
+
     private static Sheets getSheets() {
         NetHttpTransport transport = new NetHttpTransport.Builder().build();
         GsonFactory gsonFactory = GsonFactory.getDefaultInstance();
         HttpRequestInitializer httpRequestInitializer = request -> {
+            request.setReadTimeout(httpTimeout * 1000);
             request.setInterceptor(intercepted -> intercepted.getUrl().set("key", API_KEY));
         };
 
