@@ -1,11 +1,9 @@
 package com.clanevents;
 
-import net.runelite.api.Client;
 import net.runelite.client.ui.overlay.OverlayMenuEntry;
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.LineComponent;
-import net.runelite.client.ui.overlay.components.TitleComponent;
 import net.runelite.client.ui.overlay.components.LayoutableRenderableEntity;
 
 import javax.inject.Inject;
@@ -20,25 +18,20 @@ import static net.runelite.client.ui.overlay.OverlayManager.OPTION_CONFIGURE;
 
 public class ClanEventsOverlay extends OverlayPanel
 {
-    private final Client client;
-    private final ClanEventsPlugin plugin;
     @Inject
     private ClanEventsConfig config;
 
     @Inject
-    private ClanEventsOverlay(Client client, ClanEventsPlugin plugin)
+    private ClanEventsOverlay()
     {
-        super(plugin);
         setPosition(OverlayPosition.TOP_CENTER);
-        this.client = client;
-        this.plugin = plugin;
         getMenuEntries().add(new OverlayMenuEntry(RUNELITE_OVERLAY_CONFIG, OPTION_CONFIGURE, "Event overlay"));
     }
 
     @Override
     public Dimension render(Graphics2D graphics)
     {
-        String text = config.eventPass() + " " + config.subPass();
+        String text = config.eventPass() + " " + config.challengePass();
         Color passColor = config.passColor();
         Color timeColor = config.timeColor();
 
@@ -58,15 +51,11 @@ public class ClanEventsOverlay extends OverlayPanel
             {
                 text = text + " " + localToGMT();
                 List<LayoutableRenderableEntity> elem = panelComponent.getChildren();
-                ((LineComponent) elem.get(0))
-                        .setRight(localToGMT());
-                ((LineComponent) elem.get(0))
-                        .setRightColor(timeColor);
+                ((LineComponent) elem.get(0)).setRight(localToGMT());
+                ((LineComponent) elem.get(0)).setRightColor(timeColor);
             }
 
-            panelComponent.setPreferredSize(new Dimension(
-                    graphics.getFontMetrics().stringWidth(text) + 10,
-                    0));
+            panelComponent.setPreferredSize(new Dimension(graphics.getFontMetrics().stringWidth(text) + 10, 0));
         }
         return super.render(graphics);
     }
