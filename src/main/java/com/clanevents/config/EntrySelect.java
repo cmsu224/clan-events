@@ -23,46 +23,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.clanevents;
+package com.clanevents.config;
 
-import javax.swing.*;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import java.awt.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-public class ColumnCellRenderer implements TableCellRenderer
+@Getter
+@RequiredArgsConstructor
+public enum EntrySelect
 {
-    private final TableCellRenderer original;
-    private Font font = null;
-    private Color color = null;
-    private int max = 20;
+    NONE("None", 0),
+    HOME("Home", 1),
+    SOTW("Skill of the Week", 2),
+    BOTW("Boss of the Week", 3),
+    EVENTS("Clan Events", 4),
+    HOF_OVERALL("Hall of Fame - Overall", 4),
+    HOF_KC("Hall of Fame - KC", 6),
+    HOF_PB("Hall of Fame - PB", 7);
 
-    public ColumnCellRenderer(TableCellRenderer original)
-    {
-        this.original = original;
-    }
-
-    public void setFont(Font font) { this.font = font; }
-
-    public void setColor(Color color) { this.color = color; }
-
-    public void setMax(int max) { this.max = max; }
+    private final String name;
+    private final int value;
 
     @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+    public String toString()
     {
-        Component comp = original.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
-        if (this.font != null) {
-            TableColumn tc = table.getColumnModel().getColumn(column);
-            tc.setPreferredWidth(this.max);
-            comp.setFont(this.font);
-        }
-
-        if (this.color != null) {
-            comp.setForeground(this.color);
-        }
-
-        return comp;
+        return name;
     }
 }

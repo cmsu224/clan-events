@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2018, Kruithne <kruithne@gmail.com>
- * Copyright (c) 2018, Psikoi <https://github.com/psikoi>
+ * Copyright (c) 2022, cmsu224 <https://github.com/cmsu224>
+ * Copyright (c) 2022, Brianmm94 <https://github.com/Brianmm94>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,7 +23,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.clanevents;
 
 import java.awt.*;
@@ -34,6 +33,7 @@ import javax.swing.*;
 
 import com.clanevents.components.combobox.ComboBoxIconEntry;
 import com.clanevents.components.combobox.ComboBoxIconListRenderer;
+import com.clanevents.config.EntrySelect;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import java.awt.Color;
@@ -106,18 +106,13 @@ class ClanEventsPanel extends PluginPanel
         final ComboBoxIconListRenderer renderer = new ComboBoxIconListRenderer();
         dropdown.setRenderer(renderer);
 
-        BufferedImage icon = ImageUtil.loadImageResource(getClass(), "home.png");
-        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Home", "home"));
-        icon = ImageUtil.loadImageResource(getClass(), "sotw.png");
-        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Skill of the Week", "sotw"));
-        icon = ImageUtil.loadImageResource(getClass(), "botw.png");
-        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Boss of the Week", "botw"));
-        icon = ImageUtil.loadImageResource(getClass(), "event.png");
-        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Clan Events", "event"));
-        icon = ImageUtil.loadImageResource(getClass(), "hof.png");
-        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Hall of Fame - Overall", "hof_overall"));
-        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Hall of Fame - KC", "hof_kc"));
-        dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Hall of Fame - PB", "hof_pb"));
+        setPage(config.entry_1());
+        setPage(config.entry_2());
+        setPage(config.entry_3());
+        setPage(config.entry_4());
+        setPage(config.entry_5());
+        setPage(config.entry_6());
+        setPage(config.entry_7());
 
         dropdown.addItemListener(event ->
         {
@@ -136,6 +131,51 @@ class ClanEventsPanel extends PluginPanel
         this.add(createRefreshButton(), BorderLayout.NORTH);
 
         this.add(ssArea, BorderLayout.NORTH);
+    }
+
+    private void setPage(EntrySelect page) {
+
+        BufferedImage icon;
+
+        switch(page) {
+            case HOME:
+                icon = ImageUtil.loadImageResource(getClass(), "home.png");
+                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Home", "home"));
+                break;
+
+            case EVENTS:
+                icon = ImageUtil.loadImageResource(getClass(), "events.png");
+                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Clan Events", "events"));
+                break;
+
+            case SOTW:
+                icon = ImageUtil.loadImageResource(getClass(), "sotw.png");
+                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Skill of the Week", "sotw"));
+                break;
+
+            case BOTW:
+                icon = ImageUtil.loadImageResource(getClass(), "botw.png");
+                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Boss of the Week", "botw"));
+                break;
+
+            case HOF_OVERALL:
+                icon = ImageUtil.loadImageResource(getClass(), "hof.png");
+                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Hall of Fame - Overall", "hof_overall"));
+                break;
+
+            case HOF_KC:
+                icon = ImageUtil.loadImageResource(getClass(), "hof.png");
+                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Hall of Fame - KC", "hof_kc"));
+                break;
+
+            case HOF_PB:
+                icon = ImageUtil.loadImageResource(getClass(), "hof.png");
+                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Hall of Fame - PB", "hof_pb"));
+                break;
+
+            default:
+                break;
+        }
     }
 
     private JButton createRefreshButton()
