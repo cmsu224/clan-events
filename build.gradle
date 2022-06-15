@@ -10,7 +10,7 @@ repositories {
 	mavenCentral()
 }
 
-def runeLiteVersion = '1.8.21'
+def runeLiteVersion = '1.8.23'
 
 dependencies {
 	implementation('com.google.apis:google-api-services-sheets:v4-rev581-1.25.0')
