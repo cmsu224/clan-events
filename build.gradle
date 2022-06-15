@@ -13,7 +13,7 @@ repositories {
 def runeLiteVersion = '1.8.21'
 
 dependencies {
-	implementation('com.google.apis:google-api-services-sheets:v4-rev20210629-1.32.1')
+	implementation('com.google.apis:google-api-services-sheets:v4-rev581-1.25.0')
 	{
 		exclude group: 'com.google.guava'
 		exclude group: 'com.google.oauth-client'
