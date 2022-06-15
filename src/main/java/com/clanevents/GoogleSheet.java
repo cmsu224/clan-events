@@ -27,7 +27,7 @@ package com.clanevents;
 
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sheets.v4.Sheets;
 
 import java.io.*;
@@ -53,13 +53,13 @@ public class GoogleSheet {
 
     private static Sheets getSheets() {
         NetHttpTransport transport = new NetHttpTransport.Builder().build();
-        GsonFactory gsonFactory = GsonFactory.getDefaultInstance();
+        JacksonFactory jsonFactory = JacksonFactory.getDefaultInstance();
         HttpRequestInitializer httpRequestInitializer = request -> {
             request.setReadTimeout(httpTimeout * 1000);
             request.setInterceptor(intercepted -> intercepted.getUrl().set("key", API_KEY));
         };
 
-        return new Sheets.Builder(transport, gsonFactory, httpRequestInitializer)
+        return new Sheets.Builder(transport, jsonFactory, httpRequestInitializer)
                 .setApplicationName(APPLICATION_NAME)
                 .build();
     }
