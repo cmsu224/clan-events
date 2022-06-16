@@ -145,7 +145,7 @@ class ClanEventsPanel extends PluginPanel
 
             case EVENTS:
                 icon = ImageUtil.loadImageResource(getClass(), "events.png");
-                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Clan Events", "events"));
+                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Active Clan Events", "events"));
                 break;
 
             case SOTW:
