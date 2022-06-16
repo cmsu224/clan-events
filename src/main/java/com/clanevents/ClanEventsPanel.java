@@ -150,12 +150,12 @@ class ClanEventsPanel extends PluginPanel
 
             case SOTW:
                 icon = ImageUtil.loadImageResource(getClass(), "sotw.png");
-                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Skill of the Week", "sotw"));
+                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Past Skill of the Week", "sotw"));
                 break;
 
             case BOTW:
                 icon = ImageUtil.loadImageResource(getClass(), "botw.png");
-                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Boss of the Week", "botw"));
+                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Past Boss of the Week", "botw"));
                 break;
 
             case HOF_OVERALL:
@@ -217,10 +217,9 @@ class ClanEventsPanel extends PluginPanel
         return button;
     }
 
-    private JButton createLinkButton()
+    private void createLinkEvent(JButton button, String url)
     {
-        final JButton button = new JButton("<html>");
-        button.setFocusable(false);
+        final String link = url;
         button.addMouseListener(new MouseAdapter()
         {
             @SneakyThrows
@@ -230,21 +229,9 @@ class ClanEventsPanel extends PluginPanel
                 if (event.getButton() == MouseEvent.BUTTON1)
                 {
                     try {
-                        for (int i = 0; i < ssArea.getComponentCount(); ++i) {
-                            //Search for the button's panel
-                            if (ssArea.getComponent(i) == event.getComponent().getParent()) {
-                                //Get the child of the panel directly after the button's panel
-                                Container c = (Container) ssArea.getComponent(i + 1);
-                                if (!c.getComponent(0).getClass().isAssignableFrom(JButton.class)) {
-                                    //Toggle whether the panel is invisible
-                                    //c.setVisible(!c.isVisible());
-                                    JTextArea textArea = (JTextArea )c.getComponent(0);
-                                    String url = textArea.getText();
-                                    URI myURI = new URI(url);
-                                    openWebpage(myURI);
-                                }
-                            }
-                        }
+                        //Open the URL
+                        URI myURI = new URI(link);
+                        openWebpage(myURI);
                     }
                     catch (Exception e) {
                         e.printStackTrace();
@@ -252,8 +239,6 @@ class ClanEventsPanel extends PluginPanel
                 }
             }
         });
-
-        return button;
     }
 
     public static void openWebpage(URI uri) {
@@ -267,10 +252,8 @@ class ClanEventsPanel extends PluginPanel
         }
     }
 
-    private JButton createHideButton()
+    private void createHideEvent(JButton button)
     {
-        final JButton button = new JButton("<html>");
-        button.setFocusable(false);
         button.addMouseListener(new MouseAdapter()
         {
             @SneakyThrows
@@ -298,8 +281,6 @@ class ClanEventsPanel extends PluginPanel
                 }
             }
         });
-
-        return button;
     }
 
     private void getSheetDataFormatted(String field)
@@ -319,6 +300,7 @@ class ClanEventsPanel extends PluginPanel
 
                 JPanel panel;
                 JScrollPane scroll;
+                JButton button;
                 TableColumn tc;
                 String val1;
                 String val2;
@@ -357,7 +339,23 @@ class ClanEventsPanel extends PluginPanel
                             panel = new JPanel(new BorderLayout());
                             panel.setBorder(new EmptyBorder(0, 0, 3, 0));
                             DefaultTableModel model = new DefaultTableModel();
-                            JTable table = new JTable(model);
+                            JTable table = new JTable(model) {
+                                public String getToolTipText(MouseEvent e) {
+                                    String tip = null;
+                                    java.awt.Point p = e.getPoint();
+                                    int row = rowAtPoint(p);
+                                    int col = columnAtPoint(p);
+
+                                    try {
+                                        tip = getValueAt(row, col).toString();
+                                    } catch (Exception excep) {
+                                        //catch null pointer exception if mouse is over an empty line
+                                        excep.printStackTrace();
+                                    }
+
+                                    return tip;
+                                }
+                            };
                             table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
                             //Add the initial column
@@ -509,96 +507,13 @@ class ClanEventsPanel extends PluginPanel
                             ssArea.add(panel);
                             break;
 
-                        case "<buttonlink>":
-                            //Create the panel and button html text area
-                            panel = new JPanel(new BorderLayout());
-                            panel.setBorder(new EmptyBorder(0, 0, 3, 0));
-                            JButton buttonlink = createLinkButton();
-                            buttonlink.setBorder(new EmptyBorder(3, 3, 3, 3));
-                            setInvisible = true;
-
-                            //Go through the rest of this row's values
-                            for (i = 1; i < rows[j].length; ++i)
-                            {
-                                try {
-                                    val2 = rows[j][i].trim();
-                                } catch (Exception e) {
-                                    val2 = "";
-                                }
-
-                                try {
-                                    switch (i - 1) {
-                                        case 0:
-                                            //The text's alignment
-                                            val2 = val2.toLowerCase();
-
-                                            switch(val2) {
-                                                case "right":
-                                                    style = SwingConstants.RIGHT;
-                                                    break;
-
-                                                case "center":
-                                                    style = SwingConstants.CENTER;
-                                                    break;
-
-                                                default:
-                                                    style = SwingConstants.LEFT;
-                                                    break;
-                                            }
-                                            buttonlink.setHorizontalAlignment(style);
-
-                                        case 1:
-                                            //Whether to show the following panel by default
-                                            val2 = val2.toLowerCase();
-                                            if (Objects.equals(val2, "show")) {
-                                                setInvisible = false;
-                                            }
-                                            break;
-
-                                        default:
-                                            break;
-                                    }
-                                } catch (Exception e) {
-                                    // Invalid value
-                                }
-                            }
-
-                            ++j;
-                            newLine = "";
-                            addNewline = false;
-                            //Add values to the button html text area, where columns are concatenated with spaces between them and rows start on new lines
-                            for (; j < rows.length; ++j) {
-
-                                try {
-                                    val2 = String.join(" ", rows[j]);
-                                } catch (Exception e) {
-                                    val2 = "";
-                                }
-
-                                if (Objects.equals(val2.trim().toLowerCase(), "</buttonlink>")) {
-                                    buttonlink.setText(buttonlink.getText() + "</html>");
-                                    break;
-                                } else {
-                                    buttonlink.setText(buttonlink.getText() + newLine + val2);
-                                }
-
-                                if (!addNewline) {
-                                    newLine = "<br>";
-                                    addNewline = true;
-                                }
-                            }
-
-                            panel.add(buttonlink, BorderLayout.NORTH);
-                            ssArea.add(panel);
-                            break;
-
                         case "<button>":
                             //Create the panel and button html text area
                             panel = new JPanel(new BorderLayout());
                             panel.setBorder(new EmptyBorder(0, 0, 3, 0));
-                            JButton button = createHideButton();
+                            button = new JButton("<html>");
                             button.setBorder(new EmptyBorder(3, 3, 3, 3));
-                            setInvisible = true;
+                            button.setFocusable(false);
 
                             //Go through the rest of this row's values
                             for (i = 1; i < rows[j].length; ++i)
@@ -629,12 +544,27 @@ class ClanEventsPanel extends PluginPanel
                                                     break;
                                             }
                                             button.setHorizontalAlignment(style);
+                                            break;
 
                                         case 1:
-                                            //Whether to show the following panel by default
+                                            //The button's action
                                             val2 = val2.toLowerCase();
-                                            if (Objects.equals(val2, "show")) {
-                                                setInvisible = false;
+
+                                            switch(val2) {
+                                                case "hide":
+                                                    createHideEvent(button);
+                                                    setInvisible = true;
+                                                    break;
+
+                                                case "show":
+                                                    createHideEvent(button);
+                                                    break;
+
+                                                default:
+                                                    if (!val2.isEmpty()) {
+                                                        createLinkEvent(button, val2);
+                                                    }
+                                                    break;
                                             }
                                             break;
 
