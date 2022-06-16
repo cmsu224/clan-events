@@ -150,12 +150,12 @@ class ClanEventsPanel extends PluginPanel
 
             case SOTW:
                 icon = ImageUtil.loadImageResource(getClass(), "sotw.png");
-                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Skill of the Week", "sotw"));
+                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Skill of the Week History", "sotw"));
                 break;
 
             case BOTW:
                 icon = ImageUtil.loadImageResource(getClass(), "botw.png");
-                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Boss of the Week", "botw"));
+                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Boss of the Week History", "botw"));
                 break;
 
             case HOF_OVERALL:
