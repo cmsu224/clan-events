@@ -34,7 +34,7 @@ import java.awt.*;
 public interface ClanEventsConfig extends Config
 {
 	int TIMEOUT_MIN = 1;
-	int TIMEOUT_MAX = 10;
+	int TIMEOUT_MAX = 5;
 	int REFRESH_PERIOD_MIN = 5;
 	int REFRESH_PERIOD_MAX = 1440;
 
@@ -159,11 +159,11 @@ public interface ClanEventsConfig extends Config
 			position = 3,
 			keyName = "requestTimeout",
 			name = "Request Timeout",
-			description = "(1-10) The Google Sheet HTTP request timeout in seconds.",
+			description = "(1-5) The Google Sheet HTTP request timeout in seconds.",
 			section = panelSection
 	)
 	@Units(Units.SECONDS)
-	default int requestTimeout() { return 3; }
+	default int requestTimeout() { return 1; }
 
 	@ConfigItem(
 			position = 4,
