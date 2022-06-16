@@ -530,7 +530,7 @@ class ClanEventsPanel extends PluginPanel
                                             button.setHorizontalAlignment(style);
 
                                         case 1:
-                                            //Whether to show the following panel by default
+                                            //The button's action
                                             val2 = val2.toLowerCase();
 
                                             switch(val2) {
@@ -544,7 +544,9 @@ class ClanEventsPanel extends PluginPanel
                                                     break;
 
                                                 default:
-                                                    createLinkEvent(button, val2);
+                                                    if (!val2.isEmpty()) {
+                                                        createLinkEvent(button, val2);
+                                                    }
                                                     break;
                                             }
                                             break;
