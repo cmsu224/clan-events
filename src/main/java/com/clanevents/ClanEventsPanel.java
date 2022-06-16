@@ -548,9 +548,7 @@ class ClanEventsPanel extends PluginPanel
 
                                         case 1:
                                             //The button's action
-                                            val2 = val2.toLowerCase();
-
-                                            switch(val2) {
+                                            switch(val2.toLowerCase()) {
                                                 case "hide":
                                                     createHideEvent(button);
                                                     setInvisible = true;
