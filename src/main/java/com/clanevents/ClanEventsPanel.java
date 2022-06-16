@@ -339,7 +339,23 @@ class ClanEventsPanel extends PluginPanel
                             panel = new JPanel(new BorderLayout());
                             panel.setBorder(new EmptyBorder(0, 0, 3, 0));
                             DefaultTableModel model = new DefaultTableModel();
-                            JTable table = new JTable(model);
+                            JTable table = new JTable(model) {
+                                public String getToolTipText(MouseEvent e) {
+                                    String tip = null;
+                                    java.awt.Point p = e.getPoint();
+                                    int row = rowAtPoint(p);
+                                    int col = columnAtPoint(p);
+
+                                    try {
+                                        tip = getValueAt(row, col).toString();
+                                    } catch (Exception excep) {
+                                        //catch null pointer exception if mouse is over an empty line
+                                        excep.printStackTrace();
+                                    }
+
+                                    return tip;
+                                }
+                            };
                             table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
                             //Add the initial column
