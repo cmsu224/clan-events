@@ -528,6 +528,7 @@ class ClanEventsPanel extends PluginPanel
                                                     break;
                                             }
                                             button.setHorizontalAlignment(style);
+                                            break;
 
                                         case 1:
                                             //The button's action
