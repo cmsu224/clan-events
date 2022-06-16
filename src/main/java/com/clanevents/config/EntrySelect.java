@@ -34,10 +34,10 @@ public enum EntrySelect
 {
     NONE("None", 0),
     HOME("Home", 1),
-    SOTW("Past Skill of the Week", 2),
-    BOTW("Past Boss of the Week", 3),
-    EVENTS("Clan Events", 4),
-    HOF_OVERALL("Hall of Fame - Overall", 4),
+    EVENTS("Active Clan Events", 2),
+    SOTW("Past Skill of the Week", 3),
+    BOTW("Past Boss of the Week", 4),
+    HOF_OVERALL("Hall of Fame - Overall", 5),
     HOF_KC("Hall of Fame - KC", 6),
     HOF_PB("Hall of Fame - PB", 7);
 
