@@ -65,12 +65,20 @@ public class GoogleSheet {
     }
 
     public static List<List<Object>> getValues(String range) throws IOException {
-        return getSheets()
-                .spreadsheets()
-                .values()
-                .get(spreadsheetId, range)
-                .execute()
-                .getValues();
+        List<List<Object>> ret = null;
+
+        try {
+            ret = getSheets()
+                    .spreadsheets()
+                    .values()
+                    .get(spreadsheetId, range)
+                    .execute()
+                    .getValues();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return ret;
     }
 
 }

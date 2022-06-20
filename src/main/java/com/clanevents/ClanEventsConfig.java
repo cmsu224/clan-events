@@ -29,6 +29,7 @@ import com.clanevents.config.EntrySelect;
 import net.runelite.client.config.*;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
 @ConfigGroup(ClanEventsPlugin.CONFIG_GROUP)
 public interface ClanEventsConfig extends Config
@@ -190,6 +191,15 @@ public interface ClanEventsConfig extends Config
 
 	@ConfigItem(
 			position = 6,
+			keyName = "entryKeybind",
+			name = "Entry Select Keybind",
+			description = "Sets the keybind used for opening the entry menu in the Clan Events panel.",
+			section = panelSection
+	)
+	default Keybind entryKeybind() { return new Keybind(KeyEvent.VK_SPACE, 0); }
+
+	@ConfigItem(
+			position = 7,
 			keyName = "entry_1",
 			name = "Entry 1",
 			description = "Selects what to show for entry 1 of the Clan Events panel.",
@@ -198,16 +208,16 @@ public interface ClanEventsConfig extends Config
 	default EntrySelect entry_1() { return EntrySelect.HOME; }
 
 	@ConfigItem(
-			position = 7,
+			position = 8,
 			keyName = "entry_2",
 			name = "Entry 2",
 			description = "Selects what to show for entry 2 of the Clan Events panel.",
 			section = panelSection
 	)
-	default EntrySelect entry_2() { return EntrySelect.EVENTS; }
+	default EntrySelect entry_2() { return EntrySelect.HUB; }
 
 	@ConfigItem(
-			position = 8,
+			position = 9,
 			keyName = "entry_3",
 			name = "Entry 3",
 			description = "Selects what to show for entry 3 of the Clan Events panel.",
@@ -216,7 +226,7 @@ public interface ClanEventsConfig extends Config
 	default EntrySelect entry_3() { return EntrySelect.SOTW; }
 
 	@ConfigItem(
-			position = 9,
+			position = 10,
 			keyName = "entry_4",
 			name = "Entry 4",
 			description = "Selects what to show for entry 4 of the Clan Events panel.",
@@ -225,7 +235,7 @@ public interface ClanEventsConfig extends Config
 	default EntrySelect entry_4() { return EntrySelect.BOTW; }
 
 	@ConfigItem(
-			position = 10,
+			position = 11,
 			keyName = "entry_5",
 			name = "Entry 5",
 			description = "Selects what to show for entry 5 of the Clan Events panel.",
@@ -234,7 +244,7 @@ public interface ClanEventsConfig extends Config
 	default EntrySelect entry_5() { return EntrySelect.HOF_OVERALL; }
 
 	@ConfigItem(
-			position = 11,
+			position = 12,
 			keyName = "entry_6",
 			name = "Entry 6",
 			description = "Selects what to show for entry 6 of the Clan Events panel.",
@@ -243,7 +253,7 @@ public interface ClanEventsConfig extends Config
 	default EntrySelect entry_6() { return EntrySelect.HOF_KC; }
 
 	@ConfigItem(
-			position = 12,
+			position = 13,
 			keyName = "entry_7",
 			name = "Entry 7",
 			description = "Selects what to show for entry 7 of the Clan Events panel.",

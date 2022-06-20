@@ -34,9 +34,9 @@ public enum EntrySelect
 {
     NONE("None", 0),
     HOME("Home", 1),
-    EVENTS("Active Clan Events", 2),
-    SOTW("Past Skill of the Week", 3),
-    BOTW("Past Boss of the Week", 4),
+    HUB("Clan Hub", 2),
+    SOTW("Skill of the Week", 3),
+    BOTW("Boss of the Week", 4),
     HOF_OVERALL("Hall of Fame - Overall", 5),
     HOF_KC("Hall of Fame - KC", 6),
     HOF_PB("Hall of Fame - PB", 7);
