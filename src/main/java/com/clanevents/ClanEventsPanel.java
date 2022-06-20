@@ -439,7 +439,14 @@ class ClanEventsPanel extends PluginPanel
         try {
             values = GoogleSheet.getValues(field);
 
-            if ((values != null) && (!values.isEmpty())) {
+            if (values == null) {
+                values = new ArrayList<List<Object>>(Arrays.asList(
+                        Arrays.asList("<text>", "times new roman, bold, 13", "red"),
+                        Arrays.asList("ERROR: HTTP REQUEST TIMEOUT"),
+                        Arrays.asList("</text>")));
+            }
+
+            if (!values.isEmpty()) {
                 //System.out.println("Data found");
 
                 JPanel panel;
