@@ -92,26 +92,22 @@ public class ClanEventsPlugin extends Plugin
 		if (event.getGroup().equals(CONFIG_GROUP))
 		{
 			panel.removeAll();
-			clientToolbar.removeNavigation(uiNavigationButton);
-			startClanPanel();
+			panel.init(config);
 		}
 	}
 
 	private void startClanPanel()
 	{
-		if (!config.sheetId().equals("") && !config.apiKey().equals(""))
-		{
-			final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "icon.png");
-			panel = injector.getInstance(ClanEventsPanel.class);
-			panel.init(config);
-			uiNavigationButton = NavigationButton.builder()
-					.tooltip("Clan Events")
-					.icon(icon)
-					.priority(7)
-					.panel(panel)
-					.build();
-			clientToolbar.addNavigation(uiNavigationButton);
-		}
+		final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "icon.png");
+		panel = injector.getInstance(ClanEventsPanel.class);
+		panel.init(config);
+		uiNavigationButton = NavigationButton.builder()
+				.tooltip("Clan Events")
+				.icon(icon)
+				.priority(5)
+				.panel(panel)
+				.build();
+		clientToolbar.addNavigation(uiNavigationButton);
 	}
 
 	@Provides

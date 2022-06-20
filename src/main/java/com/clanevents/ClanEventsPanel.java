@@ -56,6 +56,7 @@ class ClanEventsPanel extends PluginPanel
     private final GoogleSheet sheet = new GoogleSheet();
     private final Semaphore sem = new Semaphore(1);
     final JComboBox<ComboBoxIconEntry> dropdown = new JComboBox<>();
+    final ComboBoxIconListRenderer renderer = new ComboBoxIconListRenderer();
     private final ActionListener timertask = event -> {
         Object obj;
 
@@ -81,11 +82,13 @@ class ClanEventsPanel extends PluginPanel
     };
     private final Timer timer = new Timer(0, timertask);
 
-    void init(ClanEventsConfig config){
+    public void init(ClanEventsConfig config){
+        InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
+        ActionMap am = getActionMap();
 
-        System.out.println("Initializing clan events panel");
+        //System.out.println("Initializing clan events panel");
 
-        //Timer task
+        //Timer task setup
         if (config.autoRefresh()) {
             timer.setRepeats(true);
             timer.setDelay(config.refreshPeriod() * 1000 * 60);
@@ -94,68 +97,189 @@ class ClanEventsPanel extends PluginPanel
             timer.setRepeats(false);
         }
 
-        //Google sheet API
+        //Disable to panel's scrollpane to remove its up and down arrow scrolling
+        this.getScrollPane().setEnabled(false);
+        //Disable tab as a traversal key
+        this.setFocusTraversalKeysEnabled(false);
+
+        //Add a mouselistener for getting focus so that keybindings work
+        this.getParent().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                requestFocus();
+            }
+        });
+
+        //Google sheet setup
         sheet.setKey(config.apiKey());
         sheet.setSheetId(config.sheetId());
         sheet.setTimeout(config.requestTimeout());
-        ssArea.setLayout(new BoxLayout(ssArea, BoxLayout.Y_AXIS));
 
-        //Dropdown menu
-        dropdown.setFocusable(false); // To prevent an annoying "focus paint" effect
+        //Remove the annoying "focus paint" effect on the dropdown
+        dropdown.setFocusable(false);
+
+        //Dropdown setup
         dropdown.setForeground(Color.WHITE);
-        final ComboBoxIconListRenderer renderer = new ComboBoxIconListRenderer();
         dropdown.setRenderer(renderer);
 
-        setPage(config.entry_1());
-        setPage(config.entry_2());
-        setPage(config.entry_3());
-        setPage(config.entry_4());
-        setPage(config.entry_5());
-        setPage(config.entry_6());
-        setPage(config.entry_7());
+        //Remove the item listener before removing all items
+        if (dropdown.getItemListeners().length > 0) {
+            dropdown.removeItemListener(dropdown.getItemListeners()[0]);
+        }
+        dropdown.removeAllItems();
 
+        //Dropdown entries
+        setEntry(config.entry_1());
+        setEntry(config.entry_2());
+        setEntry(config.entry_3());
+        setEntry(config.entry_4());
+        setEntry(config.entry_5());
+        setEntry(config.entry_6());
+        setEntry(config.entry_7());
+
+        //Select the first entry
+        dropdown.setSelectedIndex(0);
+
+        //Dropdown selection listener
         dropdown.addItemListener(event ->
         {
             if (event.getStateChange() == ItemEvent.SELECTED)
             {
                 ssArea.setVisible(false);
                 timer.restart();
-                System.out.println("State changing...");
+                //System.out.println("State changing...");
             }
         });
 
-        dropdown.setSelectedIndex(0);
+        //Add dropdown to the panel
         this.add(dropdown);
 
-        //Refresh Button
+        //Add refresh button to the panel
         this.add(createRefreshButton(), BorderLayout.NORTH);
 
+        //Keybinding inputs
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_1, 0), KeyName.KN_1);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD1, 0), KeyName.KN_1);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_2, 0), KeyName.KN_2);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD2, 0), KeyName.KN_2);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_3, 0), KeyName.KN_3);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD3, 0), KeyName.KN_3);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_4, 0), KeyName.KN_4);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD4, 0), KeyName.KN_4);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_5, 0), KeyName.KN_5);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD5, 0), KeyName.KN_5);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_6, 0), KeyName.KN_6);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD6, 0), KeyName.KN_6);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_7, 0), KeyName.KN_7);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD7, 0), KeyName.KN_7);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), KeyName.KN_UP);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_KP_UP, 0), KeyName.KN_UP);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), KeyName.KN_DOWN);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_KP_DOWN, 0), KeyName.KN_DOWN);
+        im.put(KeyStroke.getKeyStroke(config.entryKeybind().getKeyCode(), 0), KeyName.KN_KEYBIND);
+
+        //Keybinding actions
+        am.put(KeyName.KN_1, new KeyAction(KeyName.KN_1, config));
+        am.put(KeyName.KN_2, new KeyAction(KeyName.KN_2, config));
+        am.put(KeyName.KN_3, new KeyAction(KeyName.KN_3, config));
+        am.put(KeyName.KN_4, new KeyAction(KeyName.KN_4, config));
+        am.put(KeyName.KN_5, new KeyAction(KeyName.KN_5, config));
+        am.put(KeyName.KN_6, new KeyAction(KeyName.KN_6, config));
+        am.put(KeyName.KN_7, new KeyAction(KeyName.KN_7, config));
+        am.put(KeyName.KN_UP, new KeyAction(KeyName.KN_UP, config));
+        am.put(KeyName.KN_DOWN, new KeyAction(KeyName.KN_DOWN, config));
+        am.put(KeyName.KN_KEYBIND, new KeyAction(KeyName.KN_KEYBIND, config));
+
+        //Set the layout for the plugin's main panel
+        ssArea.setLayout(new BoxLayout(ssArea, BoxLayout.Y_AXIS));
+
+        //Add the plugin's main panel
         this.add(ssArea, BorderLayout.NORTH);
     }
 
-    private void setPage(EntrySelect page) {
+    private class KeyAction extends AbstractAction {
+
+        KeyName key;
+        ClanEventsConfig config;
+
+        KeyAction(KeyName key, ClanEventsConfig config) {
+            this.key = key;
+            this.config = config;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int selected;
+            switch(key) {
+                case KN_1:
+                case KN_2:
+                case KN_3:
+                case KN_4:
+                case KN_5:
+                case KN_6:
+                case KN_7:
+                    if (dropdown.isPopupVisible()) {
+                        if (dropdown.getItemCount() >= key.getValue()) {
+                            dropdown.setSelectedIndex(key.getValue() - 1);
+                            dropdown.setPopupVisible(false);
+                        }
+                    }
+                    break;
+
+                case KN_UP:
+                    if (dropdown.isPopupVisible()) {
+                        selected = dropdown.getSelectedIndex();
+                        if (selected == 0) {
+                            dropdown.setSelectedIndex(dropdown.getItemCount() - 1);
+                        } else {
+                            dropdown.setSelectedIndex(selected - 1);
+                        }
+                        dropdown.setPopupVisible(false);
+                    }
+                    break;
+
+                case KN_DOWN:
+                    if (dropdown.isPopupVisible()) {
+                        selected = dropdown.getSelectedIndex();
+                        if (selected == (dropdown.getItemCount() - 1)) {
+                            dropdown.setSelectedIndex(0);
+                        } else {
+                            dropdown.setSelectedIndex(selected + 1);
+                        }
+                        dropdown.setPopupVisible(false);
+                    }
+                    break;
+
+                case KN_KEYBIND:
+                    dropdown.setPopupVisible(!dropdown.isPopupVisible());
+                    break;
+            }
+        }
+    }
+
+    private void setEntry(EntrySelect entry) {
 
         BufferedImage icon;
 
-        switch(page) {
+        switch(entry) {
             case HOME:
                 icon = ImageUtil.loadImageResource(getClass(), "home.png");
                 dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Home", "home"));
                 break;
 
-            case EVENTS:
-                icon = ImageUtil.loadImageResource(getClass(), "events.png");
-                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Active Clan Events", "events"));
+            case HUB:
+                icon = ImageUtil.loadImageResource(getClass(), "hub.png");
+                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Clan Hub", "hub"));
                 break;
 
             case SOTW:
                 icon = ImageUtil.loadImageResource(getClass(), "sotw.png");
-                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Past Skill of the Week", "sotw"));
+                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Skill of the Week", "sotw"));
                 break;
 
             case BOTW:
                 icon = ImageUtil.loadImageResource(getClass(), "botw.png");
-                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Past Boss of the Week", "botw"));
+                dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Boss of the Week", "botw"));
                 break;
 
             case HOF_OVERALL:
@@ -192,10 +316,9 @@ class ClanEventsPanel extends PluginPanel
                 {
                     if (sem.tryAcquire())
                     {
-                        System.out.println("Acquired semaphore");
+                        //System.out.println("Acquired semaphore");
                         ssArea.setVisible(false);
                         timer.restart();
-                        System.out.println("Refreshing...");
                         SwingUtilities.invokeLater(() -> {
                             try {
                                 Thread.sleep(200);
@@ -206,10 +329,6 @@ class ClanEventsPanel extends PluginPanel
                             sem.release();
                         });
                     }
-                    else
-                    {
-                        System.out.println("No semaphore");
-                    }
                 }
             }
         });
@@ -217,7 +336,7 @@ class ClanEventsPanel extends PluginPanel
         return button;
     }
 
-    private void createLinkEvent(JButton button, String url)
+    private static void createLinkEvent(JButton button, String url)
     {
         final String link = url;
         button.addMouseListener(new MouseAdapter()
@@ -241,7 +360,7 @@ class ClanEventsPanel extends PluginPanel
         });
     }
 
-    public static void openWebpage(URI uri) {
+    private static void openWebpage(URI uri) {
         Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
         if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
             try {
@@ -283,20 +402,45 @@ class ClanEventsPanel extends PluginPanel
         });
     }
 
+    private void addTableMouseEvents(JTable table) {
+        table.addMouseListener(new MouseAdapter() {
+            @SneakyThrows
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                java.awt.Point p = e.getPoint();
+                int row = table.rowAtPoint(p);
+                int col = table.columnAtPoint(p);
+                table.setToolTipText(table.getValueAt(row, col).toString());
+            }
+
+            @SneakyThrows
+            @Override
+            public void mouseExited(MouseEvent e) {
+                table.setToolTipText(null);
+            }
+        });
+    }
+
+    private void addParentMouseEvents(Component comp) {
+        comp.addMouseListener(new MouseAdapter() {
+            @SneakyThrows
+            @Override
+            public void mousePressed(MouseEvent e) {
+                ssArea.getParent().getParent().dispatchEvent(e);
+            }
+        });
+    }
+
     private void getSheetDataFormatted(String field)
     {
-        System.out.println("Checking sheet for data");
+        //System.out.println("Checking sheet for data");
         List<List<Object>> values;
 
         try {
             values = GoogleSheet.getValues(field);
 
-            if (values == null) {
-                System.out.println("Failed to get data from sheet");
-            } else if (values.isEmpty()) {
-                System.out.println("No data found");
-            } else {
-                System.out.println("Data found");
+            if ((values != null) && (!values.isEmpty())) {
+                //System.out.println("Data found");
 
                 JPanel panel;
                 JScrollPane scroll;
@@ -339,23 +483,8 @@ class ClanEventsPanel extends PluginPanel
                             panel = new JPanel(new BorderLayout());
                             panel.setBorder(new EmptyBorder(0, 0, 3, 0));
                             DefaultTableModel model = new DefaultTableModel();
-                            JTable table = new JTable(model) {
-                                public String getToolTipText(MouseEvent e) {
-                                    String tip = null;
-                                    java.awt.Point p = e.getPoint();
-                                    int row = rowAtPoint(p);
-                                    int col = columnAtPoint(p);
-
-                                    try {
-                                        tip = getValueAt(row, col).toString();
-                                    } catch (Exception excep) {
-                                        //catch null pointer exception if mouse is over an empty line
-                                        excep.printStackTrace();
-                                    }
-
-                                    return tip;
-                                }
-                            };
+                            JTable table = new JTable(model);
+                            addTableMouseEvents(table);
                             table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
                             //Add the initial column
@@ -494,10 +623,10 @@ class ClanEventsPanel extends PluginPanel
                             //Put it in a scrollpane so that the panel is the correct size
                             scroll = new JScrollPane(table);
                             scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-                            scroll.removeMouseWheelListener(scroll.getMouseWheelListeners()[0]);
+                            addParentMouseEvents(table);
+                            addParentMouseEvents(table.getTableHeader());
                             //Disable it to stop the annoying selection stuff
                             table.setEnabled(false);
-                            scroll.setEnabled(false);
                             panel.add(scroll, BorderLayout.NORTH);
                             //Sets it invisible by default
                             if (setInvisible) {
@@ -514,6 +643,7 @@ class ClanEventsPanel extends PluginPanel
                             button = new JButton("<html>");
                             button.setBorder(new EmptyBorder(3, 3, 3, 3));
                             button.setFocusable(false);
+                            addParentMouseEvents(button);
 
                             //Go through the rest of this row's values
                             for (i = 1; i < rows[j].length; ++i)
@@ -691,8 +821,8 @@ class ClanEventsPanel extends PluginPanel
                             //Put it in a scrollpane so that the panel is the correct size
                             scroll = new JScrollPane(text);
                             scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-                            scroll.removeMouseWheelListener(scroll.getMouseWheelListeners()[0]);
                             scroll.setBorder(new EmptyBorder(0, 0, -1, -1));
+                            addParentMouseEvents(text);
                             //Disable it to stop the annoying selection stuff
                             text.setEnabled(false);
                             panel.add(scroll, BorderLayout.NORTH);
@@ -758,13 +888,13 @@ class ClanEventsPanel extends PluginPanel
     public void onActivate() {
         ssArea.setVisible(false);
         timer.start();
-        System.out.println("Timer started");
+        //System.out.println("Timer started");
     }
 
     @Override
     public void onDeactivate() {
         timer.stop();
-        System.out.println("Timer stopped");
+        //System.out.println("Timer stopped");
     }
 }
 
