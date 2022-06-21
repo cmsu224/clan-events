@@ -10,7 +10,7 @@ repositories {
 	mavenCentral()
 }
 
-def runeLiteVersion = '1.8.23'
+def runeLiteVersion = '1.8.24.2'
 
 dependencies {
 	implementation('com.google.apis:google-api-services-sheets:v4-rev581-1.25.0')
@@ -33,7 +33,7 @@ dependencies {
 }
 
 group = 'com.clanevents'
-version = '2.0'
+version = '2.1'
 sourceCompatibility = "1.8"
 
 tasks.withType(JavaCompile) {

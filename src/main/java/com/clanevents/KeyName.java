@@ -25,47 +25,30 @@
  */
 package com.clanevents;
 
-import javax.swing.*;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import java.awt.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-public class ColumnCellRenderer implements TableCellRenderer
+@Getter
+@RequiredArgsConstructor
+public enum KeyName
 {
-    private final TableCellRenderer original;
-    private Font font = null;
-    private Color color = null;
-    private int max = 20;
+    KN_1("1", 1),
+    KN_2("2", 2),
+    KN_3("3", 3),
+    KN_4("4", 4),
+    KN_5("5", 5),
+    KN_6("6", 6),
+    KN_7("7", 7),
+    KN_UP("UP", 8),
+    KN_DOWN("DOWN", 9),
+    KN_KEYBIND("KEYBIND", 10);
 
-    public ColumnCellRenderer(TableCellRenderer original)
-    {
-        this.original = original;
-    }
-
-    public void setFont(Font font) { this.font = font; }
-
-    public void setColor(Color color) { this.color = color; }
-
-    public void setMax(int max) { this.max = max; }
+    private final String name;
+    private final int value;
 
     @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+    public String toString()
     {
-        Component comp = original.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        JComponent jcomp = (JComponent)comp;
-
-        jcomp.setToolTipText((String)value);
-
-        if (this.font != null) {
-            TableColumn tc = table.getColumnModel().getColumn(column);
-            tc.setPreferredWidth(this.max);
-            comp.setFont(this.font);
-        }
-
-        if (this.color != null) {
-            comp.setForeground(this.color);
-        }
-
-        return comp;
+        return name;
     }
 }
