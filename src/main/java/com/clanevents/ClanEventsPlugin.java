@@ -93,6 +93,11 @@ public class ClanEventsPlugin extends Plugin
 		{
 			panel.removeAll();
 			panel.init(config);
+			if(!config.sheetId().equals("") && !config.apiKey().equals("")){
+				clientToolbar.addNavigation(uiNavigationButton);
+			}else{
+				clientToolbar.removeNavigation(uiNavigationButton);
+			}
 		}
 	}
 
@@ -107,7 +112,9 @@ public class ClanEventsPlugin extends Plugin
 				.priority(5)
 				.panel(panel)
 				.build();
-		clientToolbar.addNavigation(uiNavigationButton);
+		if(!config.sheetId().equals("") && !config.apiKey().equals("")){
+			clientToolbar.addNavigation(uiNavigationButton);
+		}
 	}
 
 	@Provides

@@ -83,6 +83,12 @@ class ClanEventsPanel extends PluginPanel
     private final Timer timer = new Timer(0, timertask);
 
     public void init(ClanEventsConfig config){
+        if(config.apiKey().equals("") || config.sheetId().equals("")){
+            JTextArea text = new JTextArea();
+            text.append("Enter a valid Google Sheet ID " + "\n" + "or API Key in the config.");
+            this.add(text);
+            return;
+        }
         InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = getActionMap();
 
