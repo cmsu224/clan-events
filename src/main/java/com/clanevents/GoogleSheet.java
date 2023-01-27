@@ -55,10 +55,9 @@ public class GoogleSheet {
         NetHttpTransport transport = new NetHttpTransport.Builder().build();
         JacksonFactory jsonFactory = JacksonFactory.getDefaultInstance();
         HttpRequestInitializer httpRequestInitializer = request -> {
-            request.setReadTimeout(httpTimeout * 1000);
+            //request.setReadTimeout(httpTimeout * 1000);
             request.setInterceptor(intercepted -> intercepted.getUrl().set("key", API_KEY));
-        };
-
+        };;
         return new Sheets.Builder(transport, jsonFactory, httpRequestInitializer)
                 .setApplicationName(APPLICATION_NAME)
                 .build();
@@ -66,7 +65,6 @@ public class GoogleSheet {
 
     public static List<List<Object>> getValues(String range) throws IOException {
         List<List<Object>> ret = null;
-
         try {
             ret = getSheets()
                     .spreadsheets()
@@ -76,9 +74,8 @@ public class GoogleSheet {
                     .getValues();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            return ret;
         }
-
-        return ret;
     }
-
 }
