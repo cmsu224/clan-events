@@ -34,8 +34,9 @@ dependencies {
 
 group = 'com.clanevents'
 version = '2.1'
-sourceCompatibility = "1.8"
+sourceCompatibility = "14"
 
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 }
+targetCompatibility = JavaVersion.VERSION_14

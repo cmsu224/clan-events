@@ -25,7 +25,7 @@
  */
 package com.clanevents;
 
-import com.clanevents.config.EntrySelect;
+import com.clanevents.constants.EntrySelect;
 import net.runelite.client.config.*;
 
 import java.awt.*;
