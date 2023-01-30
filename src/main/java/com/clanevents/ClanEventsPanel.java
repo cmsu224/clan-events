@@ -36,6 +36,7 @@ import javax.swing.*;
 import com.clanevents.components.combobox.ComboBoxIconEntry;
 import com.clanevents.components.combobox.ComboBoxIconListRenderer;
 import com.clanevents.constants.EntrySelect;
+import com.google.common.collect.ImmutableList;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,15 +58,15 @@ import net.runelite.client.util.SwingUtil;
 @Slf4j
 class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
     private final JPanel ssArea = new JPanel();
-    private final Model model = new Model();
-    private final static List<List<Object>> ERROR_MESSAGE = List.of(
-            List.of("<text>", "times new roman, bold, 13", "red"),
-            List.of("ERROR: HTTP REQUEST TIMEOUT"),
-            List.of("</text>"));
-    private final static List<List<Object>> LOADING_MESSAGE = List.of(
-            List.of("<text>", "times new roman, bold, 13", "white"),
-            List.of("Loading data... please wait."),
-            List.of("</text>"));
+    private final Service service = new Service();
+    private final static List<List<Object>> ERROR_MESSAGE = new ArrayList<>(Arrays.asList(
+            Arrays.asList("<text>", "times new roman, bold, 13", "red"),
+            ImmutableList.of("ERROR: HTTP REQUEST TIMEOUT"),
+            ImmutableList.of("</text>")));
+    private final static List<List<Object>> LOADING_MESSAGE = new ArrayList<>(Arrays.asList(
+            Arrays.asList("<text>", "times new roman, bold, 13", "white"),
+            ImmutableList.of("Loading data... please wait."),
+            ImmutableList.of("</text>")));
     private final GoogleSheet sheet = new GoogleSheet();
     final JComboBox<ComboBoxIconEntry> dropdown = new JComboBox<>();
     final ComboBoxIconListRenderer renderer = new ComboBoxIconListRenderer();
@@ -191,14 +192,14 @@ class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
 
         //Add the plugin's main panel
         this.add(ssArea, BorderLayout.NORTH);
-        model.addListener(this);
-        if (model.sheetValueRangeList.isEmpty()) model.refreshData();
+        service.addListener(this);
+        if (service.sheetValueRangeList.isEmpty()) service.refreshData();
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("state") && evt.getNewValue() != evt.getOldValue()) {
-            System.out.println(evt);
+            System.out.printf("State changing: old: %s, new: %s%n", evt.getOldValue(), evt.getNewValue());
             switch ((State) evt.getNewValue()) {
                 case LOADING:
                     updatePanel(LOADING_MESSAGE);
@@ -209,7 +210,7 @@ class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
                             .ifPresent(this::updateUiAfterAPI);
                     break;
                 case ERROR:
-                    if (!model.sheetValueRangeList.isEmpty()) {
+                    if (!service.sheetValueRangeList.isEmpty()) {
                         updateErrorPanel(ERROR_MESSAGE);
                         try {
                             TimeUnit.SECONDS.sleep(3);
@@ -327,8 +328,8 @@ class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
             @SneakyThrows
             @Override
             public void mousePressed(MouseEvent event) {
-                if (event.getButton() == MouseEvent.BUTTON1 && model.state != State.LOADING) {
-                    model.refreshData();
+                if (event.getButton() == MouseEvent.BUTTON1 && service.state != State.LOADING) {
+                    service.refreshData();
                 }
             }
         });
@@ -400,7 +401,8 @@ class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
                 java.awt.Point p = e.getPoint();
                 int row = table.rowAtPoint(p);
                 int col = table.columnAtPoint(p);
-                table.setToolTipText(table.getValueAt(row, col).toString());
+                Object tooltip = table.getValueAt(row, col);
+                table.setToolTipText(tooltip == null ? " " : tooltip.toString());
             }
 
             @SneakyThrows
@@ -424,7 +426,7 @@ class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
     public void updateUiAfterAPI(String header) {
         CompletableFuture.supplyAsync(() -> {
             try {
-                SwingUtilities.invokeAndWait(() -> model.getSheet(header).ifPresent(this::updatePanel));
+                SwingUtilities.invokeAndWait(() -> service.getSheet(header).ifPresent(this::updatePanel));
             } catch (Exception e) {
                 e.printStackTrace();
             }

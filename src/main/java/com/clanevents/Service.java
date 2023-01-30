@@ -4,18 +4,19 @@ import lombok.Data;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Data
-public class Model{
+public class Service {
 
     SwingPropertyChangeSupport propChangeFirer;
     Optional<List<List<Object>>> apiValues = Optional.empty();
-    List<SheetValueRange> sheetValueRangeList = List.of();
+    List<SheetValueRange> sheetValueRangeList = new ArrayList<>();
     State state = State.IDLE;
-    public Model() {
+    public Service() {
         propChangeFirer = new SwingPropertyChangeSupport(this);
     }
 

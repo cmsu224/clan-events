@@ -32,8 +32,9 @@ import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class GoogleSheet {
@@ -42,7 +43,8 @@ public class GoogleSheet {
     private static String spreadsheetId;
     private static int httpTimeout;
 
-    private final static List<String> RANGES = List.of("Links", "home", "hub", "sotw", "botw", "hof_overall", "hof_kc", "hof_pb", "hof_sotw_botw_data", "sotw_data", "botw_data");
+    //private final static List<String> RANGES = List.of("Links", "home", "hub", "sotw", "botw", "hof_overall", "hof_kc", "hof_pb", "hof_sotw_botw_data", "sotw_data", "botw_data");
+    private final static List<String> RANGES = new ArrayList<>(Arrays.asList("home", "hub", "sotw", "botw", "hof_overall", "hof_kc", "hof_pb"));
 
     public void setKey(String appKey) {
         API_KEY = appKey;
@@ -59,9 +61,7 @@ public class GoogleSheet {
     private static Sheets getSheets() {
         NetHttpTransport transport = new NetHttpTransport.Builder().build();
         JacksonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-        HttpRequestInitializer httpRequestInitializer = request -> {
-            request.setInterceptor(intercepted -> intercepted.getUrl().set("key", API_KEY));
-        };
+        HttpRequestInitializer httpRequestInitializer = request -> request.setInterceptor(intercepted -> intercepted.getUrl().set("key", API_KEY));
         return new Sheets.Builder(transport, jsonFactory, httpRequestInitializer)
                 .setApplicationName(APPLICATION_NAME)
                 .build();
@@ -83,7 +83,6 @@ public class GoogleSheet {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                })
-                .toList();
+                }).collect(Collectors.toList());
     }
 }
