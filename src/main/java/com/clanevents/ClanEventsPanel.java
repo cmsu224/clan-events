@@ -69,12 +69,9 @@ class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
     private final GoogleSheet sheet = new GoogleSheet();
     final JComboBox<ComboBoxIconEntry> dropdown = new JComboBox<>();
     final ComboBoxIconListRenderer renderer = new ComboBoxIconListRenderer();
-    private final ActionListener timertask = event -> {
-        Optional.ofNullable((ComboBoxIconEntry) dropdown.getSelectedItem())
-                .flatMap(ComboBoxIconEntry::getData)
-                .ifPresent(this::updateUiAfterAPI);
-
-    };
+    private final ActionListener timertask = event -> Optional.ofNullable((ComboBoxIconEntry) dropdown.getSelectedItem())
+            .flatMap(ComboBoxIconEntry::getData)
+            .ifPresent(this::updateUiAfterAPI);
     private final Timer timer = new Timer(0, timertask);
 
     public void init(ClanEventsConfig config) {
@@ -203,11 +200,15 @@ class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
         if (evt.getPropertyName().equals("state") && evt.getNewValue() != evt.getOldValue()) {
             System.out.println(evt);
             switch ((State) evt.getNewValue()) {
-                case LOADING -> updatePanel(LOADING_MESSAGE);
-                case COMPLETED -> Optional.ofNullable((ComboBoxIconEntry) dropdown.getSelectedItem())
-                        .flatMap(ComboBoxIconEntry::getData)
-                        .ifPresent(this::updateUiAfterAPI);
-                case ERROR -> {
+                case LOADING:
+                    updatePanel(LOADING_MESSAGE);
+                    break;
+                case COMPLETED:
+                    Optional.ofNullable((ComboBoxIconEntry) dropdown.getSelectedItem())
+                            .flatMap(ComboBoxIconEntry::getData)
+                            .ifPresent(this::updateUiAfterAPI);
+                    break;
+                case ERROR:
                     if (!model.sheetValueRangeList.isEmpty()) {
                         updateErrorPanel(ERROR_MESSAGE);
                         try {
@@ -221,7 +222,7 @@ class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
                     } else {
                         updateErrorPanel(ERROR_MESSAGE);
                     }
-                }
+                    break;
             }
         }
     }
@@ -240,15 +241,21 @@ class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
         public void actionPerformed(ActionEvent e) {
             int selected;
             switch (key) {
-                case KN_1, KN_2, KN_3, KN_4, KN_5, KN_6, KN_7 -> {
+                case KN_1:
+                case KN_2:
+                case KN_3:
+                case KN_4:
+                case KN_5:
+                case KN_6:
+                case KN_7:
                     if (dropdown.isPopupVisible()) {
                         if (dropdown.getItemCount() >= key.getValue()) {
                             dropdown.setSelectedIndex(key.getValue() - 1);
                             dropdown.setPopupVisible(false);
                         }
                     }
-                }
-                case KN_UP -> {
+                    break;
+                case KN_UP:
                     if (dropdown.isPopupVisible()) {
                         selected = dropdown.getSelectedIndex();
                         if (selected == 0) {
@@ -258,8 +265,8 @@ class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
                         }
                         dropdown.setPopupVisible(false);
                     }
-                }
-                case KN_DOWN -> {
+                    break;
+                case KN_DOWN:
                     if (dropdown.isPopupVisible()) {
                         selected = dropdown.getSelectedIndex();
                         if (selected == (dropdown.getItemCount() - 1)) {
@@ -269,8 +276,10 @@ class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
                         }
                         dropdown.setPopupVisible(false);
                     }
-                }
-                case KN_KEYBIND -> dropdown.setPopupVisible(!dropdown.isPopupVisible());
+                    break;
+                case KN_KEYBIND:
+                    dropdown.setPopupVisible(!dropdown.isPopupVisible());
+                    break;
             }
         }
     }
@@ -280,36 +289,34 @@ class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
         BufferedImage icon;
 
         switch (entry) {
-            case HOME -> {
+            case HOME:
                 icon = ImageUtil.loadImageResource(getClass(), "home.png");
                 dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Home", Optional.of("home")));
-            }
-            case HUB -> {
+                break;
+            case HUB:
                 icon = ImageUtil.loadImageResource(getClass(), "hub.png");
                 dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Clan Hub", Optional.of("hub")));
-            }
-            case SOTW -> {
+                break;
+            case SOTW:
                 icon = ImageUtil.loadImageResource(getClass(), "sotw.png");
                 dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Skill of the Week", Optional.of("sotw")));
-            }
-            case BOTW -> {
+                break;
+            case BOTW:
                 icon = ImageUtil.loadImageResource(getClass(), "botw.png");
                 dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Boss of the Week", Optional.of("botw")));
-            }
-            case HOF_OVERALL -> {
+                break;
+            case HOF_OVERALL:
                 icon = ImageUtil.loadImageResource(getClass(), "hof.png");
                 dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Hall of Fame - Overall", Optional.of("hof_overall")));
-            }
-            case HOF_KC -> {
+                break;
+            case HOF_KC:
                 icon = ImageUtil.loadImageResource(getClass(), "hof.png");
                 dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Hall of Fame - KC", Optional.of("hof_kc")));
-            }
-            case HOF_PB -> {
+                break;
+            case HOF_PB:
                 icon = ImageUtil.loadImageResource(getClass(), "hof.png");
                 dropdown.addItem(new ComboBoxIconEntry(new ImageIcon(icon), " Hall of Fame - PB", Optional.of("hof_pb")));
-            }
-            default -> {
-            }
+                break;
         }
     }
 
@@ -417,9 +424,7 @@ class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
     public void updateUiAfterAPI(String header) {
         CompletableFuture.supplyAsync(() -> {
             try {
-                SwingUtilities.invokeAndWait(() -> {
-                    model.getSheet(header).ifPresent(this::updatePanel);
-                });
+                SwingUtilities.invokeAndWait(() -> model.getSheet(header).ifPresent(this::updatePanel));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -579,7 +584,7 @@ class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
                         }
                     }
 
-                    //Now that all of the columns have been added, make modifications to them
+                    //Now that all the columns have been added, make modifications to them
                     for (i = 0; i < model.getColumnCount(); ++i) {
                         tc = table.getColumnModel().getColumn(i);
                         tc.setPreferredWidth(0);
@@ -1024,7 +1029,7 @@ class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
                                 }
                             }
 
-                            //Now that all of the columns have been added, make modifications to them
+                            //Now that all the columns have been added, make modifications to them
                             for (i = 0; i < model.getColumnCount(); ++i) {
                                 tc = table.getColumnModel().getColumn(i);
                                 tc.setPreferredWidth(0);
