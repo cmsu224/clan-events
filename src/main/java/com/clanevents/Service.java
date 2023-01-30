@@ -40,7 +40,7 @@ public class Service {
                 return State.ERROR;
             }
             return State.COMPLETED;
-        }).<State>handle((r, v) -> {
+        }).handle((r, v) -> {
             setState(r);
             return null;
         });

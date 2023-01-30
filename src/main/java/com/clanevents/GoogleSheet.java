@@ -32,8 +32,8 @@ import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,10 +41,7 @@ public class GoogleSheet {
     private static final String APPLICATION_NAME = "Google Sheets API Java Quickstart";
     private static Object API_KEY;
     private static String spreadsheetId;
-    private static int httpTimeout;
-
-    //private final static List<String> RANGES = List.of("Links", "home", "hub", "sotw", "botw", "hof_overall", "hof_kc", "hof_pb", "hof_sotw_botw_data", "sotw_data", "botw_data");
-    private final static List<String> RANGES = new ArrayList<>(Arrays.asList("home", "hub", "sotw", "botw", "hof_overall", "hof_kc", "hof_pb"));
+    private final static List<String> RANGES = Collections.unmodifiableList(Arrays.asList("home", "hub", "sotw", "botw", "hof_overall", "hof_kc", "hof_pb"));
 
     public void setKey(String appKey) {
         API_KEY = appKey;
@@ -52,10 +49,6 @@ public class GoogleSheet {
 
     public void setSheetId(String sheetID) {
         spreadsheetId = sheetID;
-    }
-
-    public void setTimeout(int timeout) {
-        httpTimeout = timeout;
     }
 
     private static Sheets getSheets() {

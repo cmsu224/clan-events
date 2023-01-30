@@ -4,5 +4,5 @@ public enum State {
     IDLE,
     LOADING,
     COMPLETED,
-    ERROR
+    ERROR,
 }
