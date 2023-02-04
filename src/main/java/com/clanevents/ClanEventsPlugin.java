@@ -27,6 +27,8 @@ package com.clanevents;
 
 import com.google.inject.Provides;
 import javax.inject.Inject;
+
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.client.config.ConfigManager;
@@ -42,6 +44,7 @@ import net.runelite.client.util.ImageUtil;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.concurrent.*;
 
 @Slf4j
 @PluginDescriptor(
@@ -73,9 +76,13 @@ public class ClanEventsPlugin extends Plugin
 
 	static final String CONFIG_GROUP = "clanevents";
 
+	@Getter(AccessLevel.PROTECTED)
+	private static ExecutorService singleThreadExecutor;
+
 	@Override
 	protected void startUp()
 	{
+		singleThreadExecutor = Executors.newSingleThreadExecutor();
 		overlayManager.add(overlay);
 		startClanPanel();
 	}
@@ -85,6 +92,7 @@ public class ClanEventsPlugin extends Plugin
 	{
 		overlayManager.remove(overlay);
 		clientToolbar.removeNavigation(uiNavigationButton);
+		singleThreadExecutor.shutdownNow();
 	}
 
 	@Subscribe
