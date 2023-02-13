@@ -83,8 +83,6 @@ class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
         InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = getActionMap();
 
-        //System.out.println("Initializing clan events panel");
-
         //Timer task setup
         if (config.autoRefresh()) {
             timer.setRepeats(true);
@@ -194,7 +192,6 @@ class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("state") && evt.getNewValue() != evt.getOldValue()) {
-            System.out.printf("State changing: old: %s, new: %s%n", evt.getOldValue(), evt.getNewValue());
             State currentState = (State) evt.getNewValue();
             updateButtonAsync(currentState);
             if (Objects.requireNonNull(currentState) == State.COMPLETED) {
