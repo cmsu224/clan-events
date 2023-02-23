@@ -25,7 +25,7 @@
  */
 package com.clanevents;
 
-import com.clanevents.config.EntrySelect;
+import com.clanevents.constants.EntrySelect;
 import net.runelite.client.config.*;
 
 import java.awt.*;
@@ -34,8 +34,6 @@ import java.awt.event.KeyEvent;
 @ConfigGroup(ClanEventsPlugin.CONFIG_GROUP)
 public interface ClanEventsConfig extends Config
 {
-	int TIMEOUT_MIN = 1;
-	int TIMEOUT_MAX = 5;
 	int REFRESH_PERIOD_MIN = 5;
 	int REFRESH_PERIOD_MAX = 1440;
 
@@ -151,20 +149,6 @@ public interface ClanEventsConfig extends Config
 			section = panelSection
 	)
 	default String apiKey() { return ""; }
-
-	@Range(
-			min = TIMEOUT_MIN,
-			max = TIMEOUT_MAX
-	)
-	@ConfigItem(
-			position = 3,
-			keyName = "requestTimeout",
-			name = "Request Timeout",
-			description = "(1-5) The Google Sheet HTTP request timeout in seconds.",
-			section = panelSection
-	)
-	@Units(Units.SECONDS)
-	default int requestTimeout() { return 1; }
 
 	@ConfigItem(
 			position = 4,

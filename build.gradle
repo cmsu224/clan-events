@@ -10,7 +10,7 @@ repositories {
 	mavenCentral()
 }
 
-def runeLiteVersion = '1.8.24.2'
+def runeLiteVersion = 'latest.release'
 
 dependencies {
 	implementation('com.google.apis:google-api-services-sheets:v4-rev581-1.25.0')
@@ -30,6 +30,7 @@ dependencies {
 
 	testImplementation 'junit:junit:4.12'
 	testImplementation group: 'net.runelite', name:'client', version: runeLiteVersion
+	testImplementation group: 'net.runelite', name:'jshell', version: runeLiteVersion
 }
 
 group = 'com.clanevents'

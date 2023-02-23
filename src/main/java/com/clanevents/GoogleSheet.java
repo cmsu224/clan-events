@@ -29,56 +29,53 @@ import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sheets.v4.Sheets;
+import com.google.api.services.sheets.v4.model.ValueRange;
 
-import java.io.*;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GoogleSheet {
     private static final String APPLICATION_NAME = "Google Sheets API Java Quickstart";
     private static Object API_KEY;
     private static String spreadsheetId;
-    private static int httpTimeout;
+    private final static List<String> RANGES = Collections.unmodifiableList(Arrays.asList("home", "hub", "sotw", "botw", "hof_overall", "hof_kc", "hof_pb"));
 
-    public void setKey(String appKey)
-    {
+    public void setKey(String appKey) {
         API_KEY = appKey;
     }
 
-    public void setSheetId(String sheetID)
-    {
+    public void setSheetId(String sheetID) {
         spreadsheetId = sheetID;
     }
-
-    public void setTimeout(int timeout) { httpTimeout = timeout; }
 
     private static Sheets getSheets() {
         NetHttpTransport transport = new NetHttpTransport.Builder().build();
         JacksonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-        HttpRequestInitializer httpRequestInitializer = request -> {
-            request.setReadTimeout(httpTimeout * 1000);
-            request.setInterceptor(intercepted -> intercepted.getUrl().set("key", API_KEY));
-        };
-
+        HttpRequestInitializer httpRequestInitializer = request -> request.setInterceptor(intercepted -> intercepted.getUrl().set("key", API_KEY));
         return new Sheets.Builder(transport, jsonFactory, httpRequestInitializer)
                 .setApplicationName(APPLICATION_NAME)
                 .build();
     }
 
-    public static List<List<Object>> getValues(String range) throws IOException {
-        List<List<Object>> ret = null;
-
-        try {
-            ret = getSheets()
-                    .spreadsheets()
-                    .values()
-                    .get(spreadsheetId, range)
-                    .execute()
-                    .getValues();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return ret;
+    public static ValueRange getValues(String range) throws IOException {
+        return getSheets()
+                .spreadsheets()
+                .values()
+                .get(spreadsheetId, range)
+                .execute();
     }
 
+    public static List<SheetValueRange> getValues() {
+        return RANGES.parallelStream()
+                .map(range -> {
+                    try {
+                        return new SheetValueRange(range, getValues(range));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }).collect(Collectors.toList());
+    }
 }
