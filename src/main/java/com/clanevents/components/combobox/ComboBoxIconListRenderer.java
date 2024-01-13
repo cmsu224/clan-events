@@ -33,11 +33,11 @@ import javax.swing.ListCellRenderer;
 import javax.swing.border.EmptyBorder;
 import lombok.Setter;
 import net.runelite.client.ui.ColorScheme;
-import net.runelite.client.ui.components.ComboBoxListRenderer;
+import net.runelite.client.ui.components.TitleCaseListCellRenderer;
 import net.runelite.client.util.Text;
 
 /**
- * Based off the {@link ComboBoxListRenderer} but supports icons and default text value
+ * Based off the {@link TitleCaseListCellRenderer} but supports icons and default text value
  */
 public final class ComboBoxIconListRenderer extends JLabel implements ListCellRenderer<Object>
 {
