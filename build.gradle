@@ -14,19 +14,19 @@ def runeLiteVersion = 'latest.release'
 
 dependencies {
 	implementation('com.google.apis:google-api-services-sheets:v4-rev581-1.25.0')
-	{
-		exclude group: 'com.google.guava'
-		exclude group: 'com.google.oauth-client'
-		exclude group: 'org.apache.httpcomponents'
-		exclude group: 'org.apache.commons'
-		exclude group: 'org.apache'
-		exclude group: 'commons-logging'
-		exclude group: 'commons-codec'
-	}
+			{
+				exclude group: 'com.google.guava'
+				exclude group: 'com.google.oauth-client'
+				exclude group: 'org.apache.httpcomponents'
+				exclude group: 'org.apache.commons'
+				exclude group: 'org.apache'
+				exclude group: 'commons-logging'
+				exclude group: 'commons-codec'
+			}
 	compileOnly group: 'net.runelite', name:'client', version: runeLiteVersion
 
-	compileOnly 'org.projectlombok:lombok:1.18.20'
-	annotationProcessor 'org.projectlombok:lombok:1.18.20'
+	compileOnly 'org.projectlombok:lombok:1.18.30'
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
 
 	testImplementation 'junit:junit:4.12'
 	testImplementation group: 'net.runelite', name:'client', version: runeLiteVersion
@@ -34,9 +34,9 @@ dependencies {
 }
 
 group = 'com.clanevents'
-version = '2.1'
-sourceCompatibility = "1.8"
+version = '2.1.1'
 
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
+	options.release.set(11)
 }
