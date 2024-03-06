@@ -29,7 +29,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import javax.swing.*;
 
@@ -52,6 +54,7 @@ import javax.swing.table.*;
 import net.runelite.client.ui.PluginPanel;
 import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.SwingUtil;
+import org.apache.commons.lang3.SystemUtils;
 
 @Slf4j
 class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
@@ -354,8 +357,8 @@ class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
                         //Open the URL
                         URI myURI = new URI(link);
                         openWebpage(myURI);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } catch (NullPointerException | URISyntaxException e) {
+                        log.error(e.getMessage());
                     }
                 }
             }
@@ -364,12 +367,29 @@ class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
 
     private static void openWebpage(URI uri) {
         Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
-        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-            try {
+        try {
+            if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
                 desktop.browse(uri);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } else {
+                // Fallback command to open webpage URI
+                String openCmd = null;
+                String uriString = uri.toString();
+                if (SystemUtils.IS_OS_WINDOWS) {
+                    openCmd = "start";
+                } else if (SystemUtils.IS_OS_MAC) {
+                    openCmd = "open";
+                } else if (SystemUtils.IS_OS_LINUX) {
+                    openCmd = "xdg-open";
+                }
+                // execute command
+                if (openCmd != null) {
+                    Runtime.getRuntime().exec(new String[]{openCmd, uriString});
+                } else {
+                    throw new UnsupportedOperationException(String.format("Unable to open URI: %s - desktop not supported", uriString));
+                }
             }
+        } catch (UnsupportedOperationException | IOException | SecurityException e) {
+            log.error(e.getMessage());
         }
     }
 
