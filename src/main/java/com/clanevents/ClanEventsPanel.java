@@ -29,7 +29,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -53,8 +52,8 @@ import javax.swing.table.*;
 
 import net.runelite.client.ui.PluginPanel;
 import net.runelite.client.util.ImageUtil;
+import net.runelite.client.util.LinkBrowser;
 import net.runelite.client.util.SwingUtil;
-import org.apache.commons.lang3.SystemUtils;
 
 @Slf4j
 class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
@@ -355,42 +354,13 @@ class ClanEventsPanel extends PluginPanel implements PropertyChangeListener {
                 if (event.getButton() == MouseEvent.BUTTON1) {
                     try {
                         //Open the URL
-                        URI myURI = new URI(link);
-                        openWebpage(myURI);
+                        LinkBrowser.browse(new URI(link).toString());
                     } catch (NullPointerException | URISyntaxException e) {
                         log.error(e.getMessage());
                     }
                 }
             }
         });
-    }
-
-    private static void openWebpage(URI uri) {
-        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
-        try {
-            if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-                desktop.browse(uri);
-            } else {
-                // Fallback command to open webpage URI
-                String openCmd = null;
-                String uriString = uri.toString();
-                if (SystemUtils.IS_OS_WINDOWS) {
-                    openCmd = "start";
-                } else if (SystemUtils.IS_OS_MAC) {
-                    openCmd = "open";
-                } else if (SystemUtils.IS_OS_LINUX) {
-                    openCmd = "xdg-open";
-                }
-                // execute command
-                if (openCmd != null) {
-                    Runtime.getRuntime().exec(new String[]{openCmd, uriString});
-                } else {
-                    throw new UnsupportedOperationException(String.format("Unable to open URI: %s - desktop not supported", uriString));
-                }
-            }
-        } catch (UnsupportedOperationException | IOException | SecurityException e) {
-            log.error(e.getMessage());
-        }
     }
 
     private void createHideEvent(JButton button) {
