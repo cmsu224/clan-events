@@ -50,3 +50,9 @@ Once you enable the API, you can create your own API Key from here: https://cons
 **Note:** There is a limit of 300 requests per minute for your API Key (or 60 requests per minute for an individual).  If you ever run into a limit, its best to have multiple API Keys for your usage.
 
 If you are using this plugin for your clan, you can simply share your spreadsheet ID and API Key with the rest of your clan members (I suggest you don't create it with your personal email).
+
+**Wise Old Man Integration**
+
+Example Spreadsheet and instructions (by hypnolope): https://docs.google.com/spreadsheets/d/1jruc7-QoezuP2d0jPNfgaPnIERezhRQ4FuQRuQswP1M/edit?usp=sharing
+![image](https://github.com/user-attachments/assets/292c0b02-fa80-4ee3-840b-e01420933ee2)
+
